@@ -8,10 +8,7 @@ const register = async (username: string, email: string, password: string): Prom
     body: JSON.stringify({ username, email, password }),
     credentials: 'include',
   };
-  return await fetch(
-    process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}register` : `/auth/register`,
-    fetchOptions,
-  )
+  return await fetch(`/auth/register`, fetchOptions)
     .then((res) => res.json())
     .catch(() => ({
       error: { message: 'Unable to connect to server. Please try again' },
