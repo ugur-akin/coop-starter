@@ -7,5 +7,4 @@
 ### Any issues with the current functionality (optional):
 - List any problems where you were not able to complete all tasks on ticket
 - List any problems this PR may cause for the project or other active PRs
-
-### Any ideas for future iterations of this feature (optional):
+- Post a screenshot/video of the problem, along with detailed console outputs where applicable
