@@ -1,8 +1,8 @@
 ### What this PR does (required):
 - list PR functionality here
 
-### Screenshots / Videos (required):
-- Post at least one screenshot to show the feature in action
+### Screenshots / Videos (front-end only):
+- Post at least one screenshot to show the feature in action. **Only required in front-end work**
 
 ### Any information needed to test this feature (required):
 - Post what steps to take to be able to test this feature (eg. "sign up as a new user and upload a profile picture from the navbar")
