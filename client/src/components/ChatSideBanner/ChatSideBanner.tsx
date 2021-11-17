@@ -28,7 +28,7 @@ const ChatSideBanner = ({ loggedInUser }: Props): JSX.Element => {
 
   return (
     <Grid className={classes.chatSideBanner}>
-      <Box className={classes.userPanel}>
+      <Box display="flex" alignItems="center" className={classes.userPanel}>
         <AvatarDisplay loggedIn user={loggedInUser} />
         <Typography className={classes.userText} variant="h5">
           {loggedInUser.username}
