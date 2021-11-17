@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import useStyles from './useStyles';
 import login from '../../helpers/APICalls/login';
 import LoginForm from './LoginForm/LoginForm';
-import AuthFooter from '../../components/AuthFooter/AuthFooter';
+import AuthHeader from '../../components/AuthHeader/AuthHeader';
 import { useAuth } from '../../context/useAuthContext';
 import { useSnackBar } from '../../context/useSnackbarContext';
 
@@ -45,7 +45,7 @@ export default function Login(): JSX.Element {
           flexDirection="column"
           className={classes.authWrapper}
         >
-          <AuthFooter linkTo="/signup" asideText="Don't have an account?" btnText="Create account" />
+          <AuthHeader linkTo="/signup" asideText="Don't have an account?" btnText="Create account" />
           <Box width="100%" maxWidth={450} p={3} alignSelf="center">
             <Grid container>
               <Grid item xs>
