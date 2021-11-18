@@ -1,6 +1,6 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme } from '@mui/material/styles';
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
   typography: {
     fontFamily: '"Open Sans", "sans-serif", "Roboto"',
     fontSize: 12,
@@ -15,4 +15,5 @@ export const theme = createMuiTheme({
   shape: {
     borderRadius: 5,
   },
+  spacing: 6,
 });

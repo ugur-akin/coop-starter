@@ -1,7 +1,6 @@
 import { ChangeEvent, useState } from 'react';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import useStyles from './useStyles';
 import { User } from '../../interface/User';
 import AvatarDisplay from '../AvatarDisplay/AvatarDisplay';
@@ -27,20 +26,20 @@ const ChatSideBanner = ({ loggedInUser }: Props): JSX.Element => {
   };
 
   return (
-    <Grid className={classes.chatSideBanner}>
-      <Box display="flex" alignItems="center" className={classes.userPanel}>
+    <Grid container display="flex" flexDirection="column" className={classes.chatSideBanner}>
+      <Grid item display="flex" alignItems="center" className={classes.userPanel}>
         <AvatarDisplay loggedIn user={loggedInUser} />
         <Typography className={classes.userText} variant="h5">
           {loggedInUser.username}
         </Typography>
         <AuthMenu />
-      </Box>
-      <Box>
+      </Grid>
+      <Grid item>
         <Typography className={classes.chatTitle} variant="h5">
           Users
         </Typography>
         <Search search={search} handleChange={handleChange} />
-      </Box>
+      </Grid>
     </Grid>
   );
 };

@@ -1,9 +1,9 @@
 import { ChangeEvent, useState, useEffect, SyntheticEvent } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import InputBase from '@mui/material/InputBase';
+import Box from '@mui/material/Box';
+import Autocomplete from '@mui/lab/Autocomplete';
 import useStyles from './useStyles';
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
-import Box from '@material-ui/core/Box';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import { User } from '../../interface/User';
 import { useDebounce } from 'use-debounce';
 import { searchUsers } from '../../helpers/APICalls/searchUsers';
@@ -65,7 +65,7 @@ const Search = ({ search, handleChange }: Props): JSX.Element => {
         onClose={() => {
           setOpen(false);
         }}
-        getOptionSelected={(option, value) => option.username === value.username}
+        getOptionSelected={(option: User, value: User) => option.username === value.username}
         getOptionLabel={(option) => option.username}
         options={options}
         loading={loading}
@@ -77,6 +77,8 @@ const Search = ({ search, handleChange }: Props): JSX.Element => {
         freeSolo
         renderInput={(params) => (
           <div className={classes.search}>
+            {/* //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore */}
             <InputBase
               {...params.inputProps}
               placeholder="Search"
