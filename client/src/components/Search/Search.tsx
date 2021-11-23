@@ -2,6 +2,7 @@ import { ChangeEvent, useState, useEffect, SyntheticEvent } from 'react';
 import useStyles from './useStyles';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import Box from '@material-ui/core/Box';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { User } from '../../interface/User';
 import { useDebounce } from 'use-debounce';
@@ -88,9 +89,9 @@ const Search = ({ search, handleChange }: Props): JSX.Element => {
                 ref: params.InputProps.ref,
               }}
               startAdornment={
-                <div className={classes.searchIcon}>
+                <Box display="flex" alignItems="center" justifyContent="center" className={classes.searchIcon}>
                   <SearchIcon />
-                </div>
+                </Box>
               }
             />
           </div>

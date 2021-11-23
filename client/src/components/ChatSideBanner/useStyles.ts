@@ -15,8 +15,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   userPanel: {
-    display: 'flex',
-    alignItems: 'center',
     marginBottom: '2rem',
   },
   userText: {

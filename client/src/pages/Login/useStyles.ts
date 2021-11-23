@@ -8,10 +8,6 @@ const useStyles = makeStyles(() => ({
     },
   },
   authWrapper: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    flexDirection: 'column',
     minHeight: '100vh',
     paddingTop: 23,
   },
@@ -20,7 +16,6 @@ const useStyles = makeStyles(() => ({
     paddingBottom: 20,
     color: '#000000',
     fontWeight: 700,
-    fontFamily: "'Open Sans'",
   },
 }));
 
