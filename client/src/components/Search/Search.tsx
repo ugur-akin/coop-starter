@@ -2,7 +2,7 @@ import { ChangeEvent, useState, useEffect, SyntheticEvent } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 import Box from '@mui/material/Box';
-import Autocomplete from '@mui/lab/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
 import useStyles from './useStyles';
 import { User } from '../../interface/User';
 import { useDebounce } from 'use-debounce';
@@ -36,7 +36,6 @@ const Search = ({ search, handleChange }: Props): JSX.Element => {
       });
 
       if (active && response && response.users) {
-        console.log(response);
         saveOptions(response.users);
       }
       setLoading(false);
@@ -65,7 +64,6 @@ const Search = ({ search, handleChange }: Props): JSX.Element => {
         onClose={() => {
           setOpen(false);
         }}
-        getOptionSelected={(option: User, value: User) => option.username === value.username}
         getOptionLabel={(option) => option.username}
         options={options}
         loading={loading}
@@ -76,11 +74,8 @@ const Search = ({ search, handleChange }: Props): JSX.Element => {
         noOptionsText="No Users Found"
         freeSolo
         renderInput={(params) => (
-          <div className={classes.search}>
-            {/* //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            //@ts-ignore */}
+          <div ref={params.InputProps.ref} className={classes.search}>
             <InputBase
-              {...params.inputProps}
               placeholder="Search"
               classes={{
                 root: classes.searchRoot,
@@ -88,7 +83,7 @@ const Search = ({ search, handleChange }: Props): JSX.Element => {
               }}
               inputProps={{
                 'aria-label': 'search',
-                ref: params.InputProps.ref,
+                ...params.inputProps,
               }}
               startAdornment={
                 <Box display="flex" alignItems="center" justifyContent="center" className={classes.searchIcon}>

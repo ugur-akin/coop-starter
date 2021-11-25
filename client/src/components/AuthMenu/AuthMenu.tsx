@@ -38,9 +38,6 @@ const AuthMenu = (): JSX.Element => {
           vertical: 'bottom',
           horizontal: 'left',
         }}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        getContentAnchorEl={null}
       >
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
