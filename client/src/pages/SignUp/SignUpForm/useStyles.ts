@@ -1,6 +1,7 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
@@ -11,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: '5px',
   },
   inputs: {
-    marginTop: '.8rem',
+    marginTop: '1rem',
     height: '2rem',
     padding: '5px',
   },
@@ -25,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
     width: 160,
     height: 56,
     borderRadius: theme.shape.borderRadius,
-    marginTop: 49,
     fontSize: 16,
     backgroundColor: '#3a8dff',
     fontWeight: 'bold',

@@ -1,11 +1,10 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   chatSideBanner: {
-    display: 'flex',
-    flexDirection: 'column',
     height: '100vh',
     padding: '1rem 1rem',
     width: drawerWidth,
@@ -15,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   userPanel: {
-    marginBottom: '2rem',
+    paddingBottom: '2rem',
   },
   userText: {
     fontWeight: 700,
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   chatTitle: {
     fontWeight: 700,
     fontSize: 20,
-    margin: '1rem 0',
+    padding: '1rem 0',
   },
   chatSummaryContainer: { overflowY: 'auto', marginTop: '1rem' },
   newChatBtn: {

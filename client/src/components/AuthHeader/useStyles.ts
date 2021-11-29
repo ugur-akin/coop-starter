@@ -1,6 +1,7 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   authHeader: {
     alignItems: 'center',
     flexWrap: 'wrap',
@@ -10,11 +11,10 @@ const useStyles = makeStyles((theme) => ({
     color: '#b0b0b0',
     fontWeight: 400,
     textAlign: 'center',
-    marginRight: 35,
     whiteSpace: 'nowrap',
     display: 'flex',
     alignItems: 'center',
-    padding: '1rem 0',
+    padding: '1rem',
   },
   accBtn: {
     width: 170,
@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#ffffff',
     color: '#3a8dff',
     boxShadow: 'none',
-    marginRight: 35,
   },
 }));
 

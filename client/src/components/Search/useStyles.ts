@@ -1,8 +1,9 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -10,13 +11,13 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 0,
     height: '50px',
     lineHeight: '18px',
-
     width: `calc(${drawerWidth} - 2rem)`,
   },
   searchRoot: {
     color: 'inherit',
     width: '100%',
     height: '100%',
+    padding: '0 0.5rem',
   },
   searchInput: {
     padding: theme.spacing(1, 1, 1, 0),
@@ -28,8 +29,8 @@ const useStyles = makeStyles((theme) => ({
   searchIcon: {
     height: '100%',
     position: 'absolute',
+    right: 15,
     pointerEvents: 'none',
-    marginLeft: '1rem',
   },
 }));
 

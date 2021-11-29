@@ -1,8 +1,8 @@
 import { useState, MouseEvent } from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useAuth } from '../../context/useAuthContext';
 
 const AuthMenu = (): JSX.Element => {
@@ -38,7 +38,6 @@ const AuthMenu = (): JSX.Element => {
           vertical: 'bottom',
           horizontal: 'left',
         }}
-        getContentAnchorEl={null}
       >
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>

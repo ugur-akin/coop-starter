@@ -1,4 +1,5 @@
-import { MuiThemeProvider, CssBaseline } from '@material-ui/core';
+import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@mui/styles';
 import { theme } from './themes/theme';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import Login from './pages/Login/Login';
@@ -12,7 +13,7 @@ import './App.css';
 
 function App(): JSX.Element {
   return (
-    <MuiThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <BrowserRouter>
         <SnackBarProvider>
           <AuthProvider>
@@ -32,7 +33,7 @@ function App(): JSX.Element {
           </AuthProvider>
         </SnackBarProvider>
       </BrowserRouter>
-    </MuiThemeProvider>
+    </ThemeProvider>
   );
 }
 

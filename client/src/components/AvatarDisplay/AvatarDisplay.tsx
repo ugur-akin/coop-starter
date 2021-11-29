@@ -1,4 +1,4 @@
-import Avatar from '@material-ui/core/Avatar';
+import Avatar from '@mui/material/Avatar';
 import { User } from '../../interface/User';
 
 interface Props {
