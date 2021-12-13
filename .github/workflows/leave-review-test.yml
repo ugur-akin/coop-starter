@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: print-pr-review-api-url
       - env: 
-        PR_API_URL: {{ github.event.pull_request.self }}
+        PR_API_URL: ${{ github.event.pull_request.self }}
       - run: echo "$PR_API_URL/reviews"
 
          
