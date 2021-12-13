@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dump Github context
-        env: 
+        env:
           GITHUB_CONTEXT: ${{ github }}
         run: echo $GITHUB_CONTEXT | jq '.' > ./context-dump.json
       - name: Upload Github context
