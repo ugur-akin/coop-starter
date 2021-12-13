@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: print-pr-review-api-url
-        env: 
-          PR_API_URL: ${{ github.event.pull_request.pull_request.self }}
+        env:
+          PR_API_URL: ${{ github.event.pull_request.url }}
         run: echo "$PR_API_URL/reviews"
 
          
