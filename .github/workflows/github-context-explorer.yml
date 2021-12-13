@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CONTEXT: ${{ toJson(github.event) }}
-      OUTPUT_FILE: ~/context-dump.json
+      OUTPUT_FILE: ./context-dump.json
     steps:
       - name: init-output-file
         run: touch $OUTPUT_FILE
