@@ -4,7 +4,7 @@ jobs:
   Dump-Context:
     runs-on: ubuntu-latest
     env:
-      CONTEXT: ${{ github.event }}
+      CONTEXT: ${{ toJson(github.event) }}
       OUTPUT_FILE: ~/context-dump.json
     steps:
       - name: dump-context-into-file
