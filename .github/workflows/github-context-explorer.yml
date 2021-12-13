@@ -6,7 +6,7 @@ jobs:
     steps:
       - name: dump-context-into-file
         env:
-          CONTEXT: ${{ github }}
+          CONTEXT: ${{ github.event }}
           OUTPUT_FILE: ~/context-dump.json
         run: echo $CONTEXT | jq '.' > $OUTPUT_FILE
       - name: upload-context-artifact
