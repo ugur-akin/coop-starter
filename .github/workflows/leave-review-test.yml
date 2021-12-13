@@ -1,4 +1,4 @@
-name: Leave automated reviews
+name: Leave Automated Reviews
 on:
   pull_request:
     types: [opened]

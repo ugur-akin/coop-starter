@@ -1,16 +1,17 @@
-name: Github Context Upload
+name: Github Context Explorer
 on: [push]
 jobs:
-  Upload-Github-Context:
+  Dump Context:
     runs-on: ubuntu-latest
     steps:
-      - name: Dump Github context
+      - name: Dump github context into a file
         env:
-          GITHUB_CONTEXT: ${{ github }}
-        run: echo $GITHUB_CONTEXT | jq '.' > ./context-dump.json
-      - name: Upload Github context
+          CONTEXT: ${{ github }}
+          OUTPUT_FILE: ~/context-dump.json
+        run: echo $CONTEXT | jq '.' > $OUTPUT_FILE
+      - name: Upload context dump
         uses: actions/upload-artifact@v2
-        with: 
-          name: github-context-dump
-          path: ./context-dump.json
+        with:
+          name: github-context-json
+          path: $OUTPUT_FILE
         
