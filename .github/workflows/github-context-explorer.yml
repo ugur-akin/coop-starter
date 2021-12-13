@@ -6,9 +6,9 @@ jobs:
     steps:
       - name: Dump Github context
         env: 
-          CONTEXT: ${{ github }}
+          GITHUB_CONTEXT: ${{ github }}
         run: |
-          echo $CONTEXT | jq '.' > ./context-dump.json
+          echo $GITHUB_CONTEXT | jq '.' > ./context-dump.json
       - name: Upload Github context
         uses: actions/upload-artifact@v2
         with: 
