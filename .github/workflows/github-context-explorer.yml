@@ -7,8 +7,6 @@ jobs:
       CONTEXT: ${{ toJson(github.event) }}
       OUTPUT_FILE: ./context-dump.json
     steps:
-      - name: init-output-file
-        run: touch $OUTPUT_FILE
       - name: dump-context-into-file
         run: echo $CONTEXT | jq '.' > $OUTPUT_FILE
       - name: upload-context-artifact
