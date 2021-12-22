@@ -2,6 +2,8 @@ name: Leave Automated Reviews
 on:
   pull_request:
     types: [opened]
+permissions:
+  pull-requests: write
 jobs:
   leave-automated-review:
     name: Leave an automated review w/ octocat/request-action
@@ -28,6 +30,7 @@ jobs:
           pull_number: ${{ github.event.pull_request.number }}
           body: |
             Congratulations on your first automated review!! :tada:
+          GITHUB_TOKEN: ${{ github.token }}
 
 
 
