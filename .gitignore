@@ -25,3 +25,6 @@ __snapshots__
 
 # debug & other vs code settings
 .vscode
+
+# Github actions
+.github/workflows/experimental/*.yml
