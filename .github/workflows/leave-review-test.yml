@@ -6,10 +6,29 @@ jobs:
   leave-review:
     runs-on: ubuntu-latest
     steps:
-      - name: print-pr-review-api-url
+      get-pr-params:
+        name: Get PR Params from Github Context
         env:
-          PR_API_URL: ${{ github.event.pull_request.url }}
-        run: echo "$PR_API_URL/reviews"
+          PR_OWNER: ${{ github.event.pull_request.owner.login }}
+          PR_REPO: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: >
+          echo "New PR created in $PR_OWNER/$PR_REPO, with no: \#$PR_NUMBER. 
+          Starting automatic review process for commonly present issues..."  
+      submit-pr:
+        name: Submit review w/ Github REST API
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews
+          accept: application/vnd.github.v3+json
+          event: COMMENT
+          owner: ${{ github.event.pull_request.owner.login }}
+          repo: ${{ github.event.repository.name }}
+          pull_number: ${{ github.event.pull_request.number }}
+          body: |
+            Congratulations on your first automated review!! :tada:
+
+
 
          
 
