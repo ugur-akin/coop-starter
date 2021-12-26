@@ -10,8 +10,12 @@ jobs:
       ORG: hatchways
       REPO: team-reindeer
       NUM: 64
+      SCRIPT_PATH: .github/scripts/scrape_pr.py
     steps:
+      - id: checkout-scraper-script
+        name: Checkout the PR scraper script
+        uses: actions/checkout@v2
       - id: scrape-pr
         name: Scrape PR using python
         run: |
-          python3 ./scripts/scrape_pr.py -o $ORG -r $REPO -n $NUM
+          python3 $SCRIPT_PATH -o $ORG -r $REPO -n $NUM
