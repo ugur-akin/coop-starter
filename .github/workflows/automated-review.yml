@@ -1,10 +1,22 @@
-name: Leave Automated Reviews
+name: Review PR for commonly encountered issues
 on:
   pull_request:
-    types: [opened]
+    types: [opened, reopened]
 permissions:
   pull-requests: write
 jobs:
+  collect-pr-info:
+    name: "Get linked issues for PR and labels"
+    runs-on: ubuntu-latest
+    env:
+      ORG: ${{ github.event.repository.owner.login }}
+      REPO: ${{ github.event.repository.name }}
+      NUM: ${{ github.event.pull_request.number }}
+    steps:
+      - id: scrape-pr
+        name: Scrape PR using python
+        run: |
+          python3 ./scripts/scrape_pr.py -o $ORG -r $REPO -n $NUM
   leave-automated-review:
     name: Leave an automated review w/ octocat/request-action
     runs-on: ubuntu-latest

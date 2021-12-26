@@ -1,0 +1,17 @@
+name: Test a job here so we don't have to create PRs
+on: [push]
+permissions:
+  pull-requests: read
+jobs:
+  collect-pr-info:
+    name: "Get linked issues for PR and labels"
+    runs-on: ubuntu-latest
+    env:
+      ORG: hatchways
+      REPO: team-reindeer
+      NUM: 64
+    steps:
+      - id: scrape-pr
+        name: Scrape PR using python
+        run: |
+          python3 ./scripts/scrape_pr.py -o $ORG -r $REPO -n $NUM
