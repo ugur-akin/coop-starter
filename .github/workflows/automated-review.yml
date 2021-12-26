@@ -5,46 +5,57 @@ on:
 permissions:
   pull-requests: write
 jobs:
-  collect-pr-info:
-    name: "Get linked issues for PR and labels"
+  initiate-automatic-pr-process:
+    name: Start automated review process
     runs-on: ubuntu-latest
     env:
-      ORG: ${{ github.event.repository.owner.login }}
-      REPO: ${{ github.event.repository.name }}
-      NUM: ${{ github.event.pull_request.number }}
+      owner: ${{ github.event.repository.owner.login }}
+      repo: ${{ github.event.repository.name }}
+      pr: ${{ github.event.pull_request.number }}
+      prPayload: ${{ toJSON(github.event.pull_request)}}
     steps:
-      - id: scrape-pr
-        name: Scrape PR using python
-        run: |
-          python3 ./scripts/scrape_pr.py -o $ORG -r $REPO -n $NUM
-  leave-automated-review:
-    name: Leave an automated review w/ octocat/request-action
-    runs-on: ubuntu-latest
-    steps:
-      - id: echo-pr-params
-        name: Get PR Params from Github Context
-        env:
-          PR_OWNER: ${{ github.event.repository.owner.login }}
-          PR_REPO: ${{ github.event.repository.name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+      - id: collect-pr-info
+        name: Get linked issues and labels for related to the PR
+        # TODO: Implement an action to collect PR info
+        #       Scrape PR for linked issues and get labels
+        #       both from issues and from the PR itself. 
+        run: | 
+          echo "I'm not implemented yet"
+        # uses: actions/hatchways/collect-pr-info@v1
+        # with:
+        #   owner: ${{ env.owner }}
+        #   repo: ${{ env.repo }}
+        #   pull_request: ${{ env.pr }}
+      - id: temporary-get-labels
+        name: >
+          Set an env variable that contains the labels
+          of the PR as a temporary step
+        # NOTE: Until we have a robust way to collect PR info
+        #        let's use just the labels for tests.
         run: >
-          echo "New PR created in $PR_OWNER/$PR_REPO, with no: \#$PR_NUMBER. 
-          Starting automatic review process for commonly present issues..."  
-      - id: submit-pr
-        name: Submit review w/ Github REST API
+          echo "labels=$(echo $prPayload | jq [.labels[].name])"
+          >> $GITHUB_ENV
+      - id: init-review
+        name: Initialize the review (Review state will be 'pending')
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews
           accept: application/vnd.github.v3+json
-          event: COMMENT
-          owner: ${{ github.event.repository.owner.login }}
-          repo: ${{ github.event.repository.name }}
-          pull_number: ${{ github.event.pull_request.number }}
-          body: |
-            Congratulations on your first automated review!! &#x1F389;
+          owner: ${{ env.owner.login }}
+          repo: ${{ env.repo }}
+          pull_number: ${{ env.pr }}            
           GITHUB_TOKEN: ${{ github.token }}
-
-
-
-         
+      - id: start-automated-reviews
+        name: Start the automated review process
+        # TODO: Implement an action that calls appropriate workflows
+        #       based on collected PR information
+        run: |
+          echo "I'm not implemented yet!"
+        # uses: actions/hatchways/start-review@v1
+        # with:
+        #   issue: ${{ env.issue }}
+        #   labels: ${{ env.labels }}
+        #   owner: ${{ env.owner }}
+        #   repo: ${{ env.repo }}
+        #   pull_request:  ${{ env.pr }}
 
