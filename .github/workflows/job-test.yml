@@ -55,13 +55,13 @@ jobs:
     continue-on-error: true
     strategy:
       matrix: 
-        ${{ fromJSON(needs.collect-pr-info.outputs) }}
+        keywords: ${{ fromJSON(needs.collect-pr-info.outputs.review-keywords) }}
       fail-fast: false
       max-parallel: 10
     steps:
       - id: echo-review
         name: Echo review path
         env: 
-          keyword: ${{ matrix.review-keywords}}
+          keyword: ${{ matrix.keywords }}
         run: |
           echo "$REVIEW_WORKFLOW_PATH $keyword"
