@@ -19,7 +19,7 @@ jobs:
           # TODO: Use scrape-pr-info step to obtain these
           issues: ${{ steps.scrape-pr-info.outputs.issues }}
           labels: ${{ steps.scrape-pr-info.outputs.labels }}
-          review-keywords: ${{ github.event.pull_request.labels.*.name }}
+          review-keywords: \[${{ join(github.event.pull_request.labels.*.name) }}\]
     steps:
       - id: scrape-pr-info
         name: Get linked issues and labels for related to the PR
@@ -53,7 +53,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix: 
-        keyword: ${{ needs.scrape-pr-info.outputs.review-keywords }}
+        keyword: ${{ fromJSON(needs.scrape-pr-info.outputs.review-keywords) }}
       fail-fast: false
       max-parallel: 10
     steps:
