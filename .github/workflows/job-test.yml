@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
           # TODO: Use scrape-pr-info step to obtain these
-          issues: ${{ steps.scrape-pr-info.outputs.issues }}
-          labels: ${{ steps.scrape-pr-info.outputs.labels }}
+          # issues: ${{ steps.scrape-pr-info.outputs.issues }}
+          # labels: ${{ steps.scrape-pr-info.outputs.labels }}
           keywords: ${{ steps.scrape-pr-info.outputs.keywords }}
     steps:
       - id: scrape-pr-info
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - env:
-          output: toJSON(needs.collect-pr-info.outputs)
+          output: ${{ toJSON(needs.collect-pr-info.outputs) }}
         run: |
           echo $output
   init-pr-review:
