@@ -4,58 +4,62 @@ on:
     types: [opened, reopened]
 permissions:
   pull-requests: write
+env:
+  URL: ${{ github.event.pull_request.url}}
+  OWNER: ${{ github.event.repository.owner.login }}
+  REPO: ${{ github.event.repository.name }}
+  PR: ${{ github.event.pull_request.number }}
+  PR_PAYLOAD: ${{ toJSON(github.event.pull_request)}}
+  REVIEW_WORKFLOW_PATH: hatchways/coop-starter/.github/workflows
 jobs:
-  initiate-automatic-pr-process:
-    name: Start automated review process
+  collect-pr-info:
+    name: Collect PR info and upload artifact
     runs-on: ubuntu-latest
-    env:
-      owner: ${{ github.event.repository.owner.login }}
-      repo: ${{ github.event.repository.name }}
-      pr: ${{ github.event.pull_request.number }}
-      prPayload: ${{ toJSON(github.event.pull_request)}}
+    outputs:
+          # TODO: Use scrape-pr-info step to obtain these
+          issues: ${{ steps.scrape-pr-info.outputs.issues }}
+          labels: ${{ steps.scrape-pr-info.outputs.labels }}
+          review-keywords: ${{ github.event.pull_request.labels.*.name }}
     steps:
-      - id: collect-pr-info
+      - id: scrape-pr-info
         name: Get linked issues and labels for related to the PR
         # TODO: Implement an action to collect PR info
         #       Scrape PR for linked issues and get labels
         #       both from issues and from the PR itself. 
         run: | 
-          echo "I'm not implemented yet"
+          echo "Not yet implemented!"
         # uses: actions/hatchways/collect-pr-info@v1
         # with:
-        #   owner: ${{ env.owner }}
-        #   repo: ${{ env.repo }}
-        #   pull_request: ${{ env.pr }}
-      - id: temporary-get-labels
-        name: >
-          Set an env variable that contains the labels
-          of the PR as a temporary step
-        # NOTE: Until we have a robust way to collect PR info
-        #        let's use just the labels for tests.
-        run: >
-          echo "labels=$(echo $prPayload | jq [.labels[].name])"
-          >> $GITHUB_ENV
-      - id: init-review
-        name: Initialize the review (Review state will be 'pending')
-        uses: octokit/request-action@v2.x
+        #   URL: ${{ env.URL }}
+  init-pr-review:
+    name: Initialize the review (Review state will be 'pending')
+    runs-on: ubuntu-latest
+    needs: scrape-pr-info
+    steps:
+      - uses: octokit/request-action@v2.x
         with:
           route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews
           accept: application/vnd.github.v3+json
-          owner: ${{ env.owner.login }}
-          repo: ${{ env.repo }}
-          pull_number: ${{ env.pr }}            
+          owner: ${{ env.OWNER.login }}
+          repo: ${{ env.REPO }}
+          pull_number: ${{ env.PR }}            
           GITHUB_TOKEN: ${{ github.token }}
-      - id: start-automated-reviews
-        name: Start the automated review process
-        # TODO: Implement an action that calls appropriate workflows
-        #       based on collected PR information
+  run-automated-reviews:
+    name: >
+      Call automated review workflows based on
+      linked PR issues and labels
+    runs-on: ubuntu-latest
+    needs: [scrape-pr-info, init-pr-review]
+    continue-on-error: true
+    strategy:
+      matrix: 
+        keyword: ${{ needs.scrape-pr-info.outputs.review-keywords }}
+      fail-fast: false
+      max-parallel: 10
+    steps:
+      - id: echo-review
+        name: Echo review path
+        env: 
+          keyword: ${{ matrix.keyword}}
         run: |
-          echo "I'm not implemented yet!"
-        # uses: actions/hatchways/start-review@v1
-        # with:
-        #   issue: ${{ env.issue }}
-        #   labels: ${{ env.labels }}
-        #   owner: ${{ env.owner }}
-        #   repo: ${{ env.repo }}
-        #   pull_request:  ${{ env.pr }}
-
+          echo "$REVIEW_WORKFLOW_PATH $keyword"
