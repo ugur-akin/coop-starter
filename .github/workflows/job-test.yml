@@ -51,6 +51,7 @@ jobs:
       linked PR issues and labels
     runs-on: ubuntu-latest
     needs: [collect-pr-info, init-pr-review]
+    if: ${{ needs.collect-pr-info.result == 'success' }}
     continue-on-error: true
     strategy:
       matrix: 
