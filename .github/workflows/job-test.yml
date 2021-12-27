@@ -19,15 +19,18 @@ jobs:
           # TODO: Use scrape-pr-info step to obtain these
           issues: ${{ steps.scrape-pr-info.outputs.issues }}
           labels: ${{ steps.scrape-pr-info.outputs.labels }}
-          review-keywords: '[generic, my-label ${{ join(github.event.pull_request.labels.*.name) }}]'
+          keywords: ${{ steps.scrape-pr-info.outputs.keywords }}
     steps:
       - id: scrape-pr-info
         name: Get linked issues and labels for related to the PR
         # TODO: Implement an action to collect PR info
         #       Scrape PR for linked issues and get labels
         #       both from issues and from the PR itself.
+        env: 
+          pr_labels: ${{ join(github.event.pull_request.labels.*.name) }}
         run: | 
           echo "Scraper not yet implemented!"
+          echo "set::output name=keywords::[generic, my-label, $pr_labels]"
         # uses: actions/hatchways/collect-pr-info@v1
         # with:
         #   URL: ${{ env.URL }}
@@ -36,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - env:
-          output: ${{ toJSON(fromJSON(needs.collect-pr-info.outputs)) }}
+          output: toJSON(needs.collect-pr-info.outputs)
         run: |
           echo $output
   init-pr-review:
