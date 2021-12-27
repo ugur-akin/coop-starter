@@ -31,6 +31,14 @@ jobs:
         # uses: actions/hatchways/collect-pr-info@v1
         # with:
         #   URL: ${{ env.URL }}
+  debug-output:
+    needs: collect-pr-info
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          output: ${{ toJSON(needs.collect-pr-info.outputs) }}
+        run: |
+          echo $output
   init-pr-review:
     name: Initialize the review (Review state will be 'pending')
     runs-on: ubuntu-latest
