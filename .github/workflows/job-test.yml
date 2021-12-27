@@ -13,7 +13,7 @@ env:
   REVIEW_WORKFLOW_PATH: hatchways/coop-starter/.github/workflows
 jobs:
   collect-pr-info:
-    name: Collect PR info and upload artifact
+    name: Compile review keywords from PR (currently only labels and 'generic' keyword)
     runs-on: ubuntu-latest
     outputs:
           # TODO: Use scrape-pr-info step to obtain these
@@ -25,9 +25,9 @@ jobs:
         name: Get linked issues and labels for related to the PR
         # TODO: Implement an action to collect PR info
         #       Scrape PR for linked issues and get labels
-        #       both from issues and from the PR itself. 
+        #       both from issues and from the PR itself.
         run: | 
-          echo "Not yet implemented!"
+          echo "Scraper not yet implemented!"
         # uses: actions/hatchways/collect-pr-info@v1
         # with:
         #   URL: ${{ env.URL }}
@@ -40,7 +40,7 @@ jobs:
         with:
           route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews
           accept: application/vnd.github.v3+json
-          owner: ${{ env.OWNER.login }}
+          owner: ${{ env.OWNER }}
           repo: ${{ env.REPO }}
           pull_number: ${{ env.PR }}            
           GITHUB_TOKEN: ${{ github.token }}
