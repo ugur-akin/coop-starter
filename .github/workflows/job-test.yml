@@ -55,7 +55,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix: 
-        ${{ fromJSON(needs.scrape-pr-info.outputs) }}
+        ${{ fromJSON(needs.collect-pr-info.outputs) }}
       fail-fast: false
       max-parallel: 10
     steps:
