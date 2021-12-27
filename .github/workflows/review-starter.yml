@@ -1,0 +1,65 @@
+name: Review PR for commonly encountered issues
+on:
+  pull_request:
+    types: [opened, reopened]
+permissions:
+  pull-requests: write
+env:
+  URL: ${{ github.event.pull_request.url}}
+  OWNER: ${{ github.event.repository.owner.login }}
+  REPO: ${{ github.event.repository.name }}
+  PR: ${{ github.event.pull_request.number }}
+  PR_PAYLOAD: ${{ toJSON(github.event.pull_request)}}
+  REVIEW_WORKFLOW_PATH: hatchways/coop-starter/.github/workflows
+jobs:
+  collect-pr-info:
+    name: Collect PR info and upload artifact
+    runs-on: ubuntu-latest
+    outputs:
+          # TODO: Use scrape-pr-info step to obtain these
+          issues: ${{ steps.scrape-pr-info.outputs.issues }}
+          labels: ${{ steps.scrape-pr-info.outputs.labels }}
+          review-keywords: ${{ github.event.pull_request.labels.*.name }}
+    steps:
+      - id: scrape-pr-info
+        name: Get linked issues and labels for related to the PR
+        # TODO: Implement an action to collect PR info
+        #       Scrape PR for linked issues and get labels
+        #       both from issues and from the PR itself. 
+        run: | 
+          echo "Not yet implemented!"
+        # uses: actions/hatchways/collect-pr-info@v1
+        # with:
+        #   URL: ${{ env.URL }}
+  init-pr-review:
+    name: Initialize the review (Review state will be 'pending')
+    runs-on: ubuntu-latest
+    needs: scrape-pr-info
+    steps:
+      - uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews
+          accept: application/vnd.github.v3+json
+          owner: ${{ env.OWNER.login }}
+          repo: ${{ env.REPO }}
+          pull_number: ${{ env.PR }}            
+          GITHUB_TOKEN: ${{ github.token }}
+  run-automated-reviews:
+    name: >
+      Call automated review workflows based on
+      linked PR issues and labels
+    runs-on: ubuntu-latest
+    needs: [scrape-pr-info, init-pr-review]
+    continue-on-error: true
+    strategy:
+      matrix: 
+        keyword: ${{ needs.scrape-pr-info.outputs.review-keywords }}
+      fail-fast: false
+      max-parallel: 10
+    steps:
+      - id: echo-review
+        name: Echo review path
+        env: 
+          keyword: ${{ matrix.keyword}}
+        run: |
+          echo "$REVIEW_WORKFLOW_PATH $keyword"
