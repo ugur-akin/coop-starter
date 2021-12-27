@@ -19,7 +19,7 @@ jobs:
           # TODO: Use scrape-pr-info step to obtain these
           # issues: ${{ steps.scrape-pr-info.outputs.issues }}
           # labels: ${{ steps.scrape-pr-info.outputs.labels }}
-          keywords: ${{ steps.scrape-pr-info.outputs.keywords }}
+          matrix: ${{ steps.scrape-pr-info.outputs.matrix }}
     steps:
       - id: scrape-pr-info
         name: Get linked issues and labels for related to the PR
@@ -30,7 +30,7 @@ jobs:
           pr_labels: ${{ join(github.event.pull_request.labels.*.name) }}
         run: | 
           echo "Scraper not yet implemented!"
-          echo "set::output name=keywords::[generic, my-label, $pr_labels]"
+          echo "set::output name=matrix::{\"keywords\": [\"generic\", \"my-label\", $pr_labels]}"
         # uses: actions/hatchways/collect-pr-info@v1
         # with:
         #   URL: ${{ env.URL }}
@@ -39,9 +39,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - env:
-          output: ${{ toJSON(needs.collect-pr-info.outputs) }}
+          matrix_json: ${{ toJSON(needs.collect-pr-info.outputs.matrix) }}
         run: |
-          echo $output
+          echo $matrix_json
   init-pr-review:
     name: Initialize the review (Review state will be 'pending')
     runs-on: ubuntu-latest
@@ -65,7 +65,7 @@ jobs:
     if: ${{ needs.collect-pr-info.result == 'success' }}
     continue-on-error: true
     strategy:
-      matrix:  ${{ fromJSON(needs.collect-pr-info.outputs) }}
+      matrix:  ${{ fromJSON(needs.collect-pr-info.outputs.matrix) }}
       fail-fast: false
       max-parallel: 10
     steps:
