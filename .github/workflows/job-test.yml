@@ -30,7 +30,7 @@ jobs:
           pr_labels: ${{ join(github.event.pull_request.labels.*.name) }}
         run: | 
           echo "Scraper not yet implemented!"
-          echo "set::output name=matrix::{\"matrix\": [\"generic\", \"my-label\", $pr_labels]}"
+          echo "::set-output name=matrix::{\"keywords\": [\"generic\", \"my-label\", $pr_labels]}"
         # uses: actions/hatchways/collect-pr-info@v1
         # with:
         #   URL: ${{ env.URL }}
