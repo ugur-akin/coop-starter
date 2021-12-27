@@ -34,7 +34,7 @@ jobs:
   init-pr-review:
     name: Initialize the review (Review state will be 'pending')
     runs-on: ubuntu-latest
-    needs: scrape-pr-info
+    needs: collect-pr-info
     steps:
       - uses: octokit/request-action@v2.x
         with:
