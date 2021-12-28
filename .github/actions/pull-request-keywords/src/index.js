@@ -1,6 +1,8 @@
 import { JSDOM } from "jsdom";
 import * as core from '@actions/core';
 import * as github from "@actions/github";
+import fetch from 'node-fetch';
+
 
 const fetchPullRequest = async (url) => {
     const fetchOptions = {
