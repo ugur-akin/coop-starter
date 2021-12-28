@@ -29,15 +29,15 @@ try {
     const { document } = new JSDOM(html).window;
     const issuesForm = document.querySelector("form", {"aria-label": "Link issues"});
 
-    const issueLinks = issuesForm.querySelectorAll("a")
-    const issues = []
+    const anchors = issuesForm.querySelectorAll("a")
+    const issueURLs = []
     for (let anchor of anchors){
         const issueURL = anchor.getAttribute("href");
         // const issue
-        issues.push(issueURL);
+        issueURLs.push(issueURL);
     }
 
-    core.setOutput('issueURLs', issues);
+    core.setOutput('issueURLs', issueURLs);
 }
 catch (err) {
     core.setFailed(err);
