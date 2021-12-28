@@ -1,0 +1,24 @@
+name: Pull Request Keywords
+author: hatchways
+description: |
+  This action scrapes the given pull request page on Github,
+  searches for any linked issues, labels and any labels 
+  associated with the linked issues. Outputs a list of keywords
+  based on scraped information that should be used to determine
+  what review processes should be run for the given pull request. 
+inputs:
+  URL: 
+    description: "URL of the pull request"
+    required: true
+outputs:
+  issueURLs:
+    description: > 
+      The list of URLs for the issues that are linked to the pull request
+  keywords:
+    description: >
+      The list of keywords hinting at what reviews 
+      should be run for the given pull request
+
+runs:
+  using: node16
+  main: build/index.js
