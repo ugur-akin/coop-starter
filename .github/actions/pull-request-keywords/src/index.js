@@ -19,9 +19,9 @@ const fetchPullRequest = async (url) => {
 
 try {
     const url = core.getInput('URL');
-    const contextURL = github.context.payload.pull_request?.html_url
+    // const contextURL = github.context.payload.pull_request?.html_url
     console.log(`URL from input: ${url}`);
-    console.log(`URL from context: ${contextURL}`);
+    // console.log(`URL from context: ${contextURL}`);
 
     const html = fetchPullRequest(url);
     const { document } = new JSDOM(html).window;
