@@ -28,7 +28,8 @@ try {
     const html = fetchPullRequest(url);
     console.log
     const { document } = new JSDOM(html).window;
-    const issuesForm = document.querySelector("form[aria-label=\"Link issues\"]");
+    console.log(document.body.innerHTML)
+    const issuesForm = document.querySelector(`form[aria-label="Link issues"]`);
     console.log
     const anchors = issuesForm.querySelectorAll("a")
     const issueURLs = []
