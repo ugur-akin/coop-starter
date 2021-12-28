@@ -25,12 +25,9 @@ try {
     console.log(`URL from input: ${url}`);
     // console.log(`URL from context: ${contextURL}`);
 
-    const html = fetchPullRequest(url);
-    console.log
+    const html = await fetchPullRequest(url);
     const { document } = new JSDOM(html).window;
-    console.log(document.body.innerHTML)
     const issuesForm = document.querySelector(`form[aria-label="Link issues"]`);
-    console.log
     const anchors = issuesForm.querySelectorAll("a")
     const issueURLs = []
     for (let anchor of anchors){
