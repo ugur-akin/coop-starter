@@ -10,7 +10,6 @@ env:
   REPO: ${{ github.event.repository.name }}
   PR: ${{ github.event.pull_request.number }}
   PR_PAYLOAD: ${{ toJSON(github.event.pull_request)}}
-  REVIEW_WORKFLOW_PATH: hatchways/coop-starter/.github/workflows
 jobs:
   collect-pr-info:
     name: Compile review keywords from PR (currently only labels and 'generic' keyword)
@@ -30,18 +29,10 @@ jobs:
           pr_labels: ${{ join(github.event.pull_request.labels.*.name) }}
         run: | 
           echo "Scraper not yet implemented!"
-          echo "::set-output name=matrix::{\"keywords\": [\"generic\", \"my-label\", $pr_labels]}"
+          echo "::set-output name=matrix::{\"keyword\": [\"generic\", \"frontend\", $pr_labels]}"
         # uses: actions/hatchways/collect-pr-info@v1
         # with:
         #   URL: ${{ env.URL }}
-  debug-output:
-    needs: collect-pr-info
-    runs-on: ubuntu-latest
-    steps:
-      - env:
-          matrix_json: ${{ toJSON(needs.collect-pr-info.outputs.matrix) }}
-        run: |
-          echo $matrix_json
   init-pr-review:
     name: Initialize the review (Review state will be 'pending')
     runs-on: ubuntu-latest
@@ -69,9 +60,29 @@ jobs:
       fail-fast: false
       max-parallel: 10
     steps:
-      - id: echo-review
-        name: Echo review path
+      - id: start-relevant-reviews
+        # TODO: Implement an action that calls any relevant reviews
+        #       to the specified keyword. The action should be smart about
+        #       not initiating the same review workflow twice! Either output
+        #       or upload artifact showing status for each review.
+        #       Usage:
+        #
+        # name: Call all the workflows that is associated with this PR
+        # uses: actions/hatchways/initiate-review-per-keyword@v1
+        # with:
+        #   URL: ${{ env.URL }}
+        #   keyword: ${{ matrix.keyword }}
+        #   GITHUB_TOKEN: ??
+        name: Echo keyword until implemented
         env: 
-          keyword: ${{ matrix.keywords }}
+          keyword: ${{ matrix.keyword }}
         run: |
-          echo "$REVIEW_WORKFLOW_PATH $keyword"
+          echo "$keyword"
+  submit-or-dismiss-review:
+    name: > 
+      Submit or dismiss review based on what/how many reviews
+      succeeded
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "I do stat check"
+      - run: echo "I send the request"
