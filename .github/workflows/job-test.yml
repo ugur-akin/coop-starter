@@ -19,6 +19,7 @@ jobs:
           # labels: ${{ steps.scrape-pr-info.outputs.labels }}
           matrix: "{keywords: ${{ steps.scrape-pr-info.outputs.keywords }}}"
     steps:
+      - uses: actions/checkout@v2
       - id: scrape-pr-info
         name: Get linked issues and labels for related to the PR
         # TODO: Implement an action to collect PR info
