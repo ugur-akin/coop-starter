@@ -10,10 +10,19 @@ inputs:
   URL: 
     description: "URL of the pull request"
     required: true
+    default: ${{ github.event.pull_request.pull_request.html_url }}
+  GITHUB_TOKEN: 
+    description: >
+      "Github token used for authenticating API requests"
+    required: true
+    default: ${{ github.token }}
 outputs:
-  issueURLs:
+  issues:
     description: > 
-      The list of URLs for the issues that are linked to the pull request
+      {Object[]} The list of URLs for the issues that are linked to the pull request
+  labels:
+    description: >
+      {Object[]} The list of lables that are linked to the pull request
   keywords:
     description: >
       The list of keywords hinting at what reviews 

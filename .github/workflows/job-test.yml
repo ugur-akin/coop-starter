@@ -1,5 +1,8 @@
 name: This workflow tests other workflows!
-on: [push]
+on: 
+  push:
+  pull_request:
+    types: [opened, reopened, synchronize]
 env:
   URL: https://github.com/hatchways/team-reindeer/pull/66
   OWNER: hatchways
@@ -11,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
           issues: ${{ steps.scrape-pr-info.outputs.issues }}
-          # labels: ${{ steps.scrape-pr-info.outputs.labels }}
-          # matrix: "{keywords: ${{ steps.scrape-pr-info.outputs.keywords }}}"
+          labels: ${{ steps.scrape-pr-info.outputs.labels }}
+          matrix: "{keywords: ${{ steps.scrape-pr-info.outputs.keywords }}}"
     steps:
       - uses: actions/checkout@v2
       - id: scrape-pr-info
