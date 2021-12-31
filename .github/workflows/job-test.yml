@@ -1,6 +1,5 @@
 name: This workflow tests other workflows!
 on: 
-  push:
   pull_request:
     types: [opened, reopened, synchronize]
 env:
@@ -18,6 +17,7 @@ jobs:
           matrix: "{keywords: ${{ steps.scrape-pr-info.outputs.keywords }}}"
     steps:
       - uses: actions/checkout@v2
+      - run: ls ./
       - id: scrape-pr-info
         name: Get linked issues and labels for related to the PR
         # env: 
@@ -26,6 +26,6 @@ jobs:
         #   echo "Scraper not yet implemented!"
         #   echo "::set-output name=matrix::{\"keyword\": [\"generic\", \"frontend\", $pr_labels]}"
         # uses: actions/hatchways/collect-pr-info@v1
-        uses: .github/actions/pull-request-keywords
+        uses: ./.github/actions/pull-request-keywords
         with:
           URL: ${{ env.URL }}
