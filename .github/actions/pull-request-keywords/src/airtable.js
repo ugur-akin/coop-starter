@@ -41,6 +41,7 @@ const fetchReviewNames = (labels, issues) => {
         (page = (records, fetchNextPage) => {
           records.forEach((record) => {
             core.debug(record.get("Name"));
+            core.debug(reviewNames);
             reviewNames.push(record.get("Name"));
           });
 
