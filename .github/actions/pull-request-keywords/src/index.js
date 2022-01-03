@@ -35,8 +35,8 @@ try {
         throw new Error(
             `Pull request URL is missing from context. Please ensure the action
             is triggered with a pull request event.`);
-    }
-
+        }
+        
     const prPayload = github.context.payload.pull_request;
     const auth = core.getInput('GITHUB_TOKEN');
     const octokit = github.getOctokit(auth);
@@ -45,28 +45,37 @@ try {
     const { document } = new JSDOM(html).window;
     
     const issuesForm = document.querySelector(`form[aria-label="Link issues"]`);
-    const anchors = issuesForm.querySelectorAll("a")
-    const issueURLs = []
-    for (let anchor of anchors){
-        const issueURL = anchor.getAttribute("href");
-        issueURLs.push(issueURL);
+
+    let issues = [];
+    if(issuesForm){
+        const anchors = issuesForm.querySelectorAll("a")
+        const issueURLs = []
+        
+        for (let anchor of anchors){
+            const issueURL = anchor.getAttribute("href");
+            issueURLs.push(issueURL);
+        }
+
+        const issueRequests = issueURLs.forEach( (url) => octokit.request(`GET ${fromHtmlUrl(url)}`) );
+        issues = await Promise.all(issueRequests);
     }
-
-    const labels = prPayload.labels.map((label) => label.name);
-    const issueRequests = issueURLs.forEach( (url) => octokit.request(`GET ${fromHtmlUrl(url)}`) );
-    const issues = await Promise.all(issueRequests);
-
+    
     const issueTitles = issues.map((issue) => issue.title)
     const issueLabels = issues.map((issue) => issue.labels.name);
-
+    const prLabels = prPayload.labels.map((label) => label.name);
+    
     const keywords = new Set();
-    labels.forEach((label) => keywords.add(label));
+    prLabels.forEach((label) => keywords.add(label));
     issueTitles.forEach((title) => keywords.add(title));
     issueLabels.forEach((label) => keywords.add(label));
 
+    const labels = new Set();
+    issueLabels.forEach((label) => labels.add(label));
+    prLabels.forEach((label) => labels.add(label));
+    
     core.setOutput('issues', issues);
     core.setOutput('labels', labels);
-    core.setOutput('keywords', keywords);
+    core.setOutput('keywords', keywords.values);
 }
 catch (err) {
     core.setFailed(err);

@@ -26,6 +26,6 @@ jobs:
         #   echo "Scraper not yet implemented!"
         #   echo "::set-output name=matrix::{\"keyword\": [\"generic\", \"frontend\", $pr_labels]}"
         # uses: actions/hatchways/collect-pr-info@v1
-        uses: ./.github/actions/pull-request-keywords
+        uses: .github/actions/pull-request-keywords
         with:
           URL: ${{ env.URL }}
