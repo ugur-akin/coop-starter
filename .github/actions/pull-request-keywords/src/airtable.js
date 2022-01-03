@@ -39,7 +39,7 @@ const fetchReviewNames = (labels, issues) => {
     
         fetchNextPage();
     }, (err) => {
-        throw err;
+        core.setFailed(err);
     });
 }
 
