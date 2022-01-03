@@ -38,7 +38,7 @@ const fetchReviewNames = (labels, issues) => {
         filterByFormula: formula,
       })
       .eachPage(
-        (page = (records, fetchNextPage) => {
+        (records, fetchNextPage) => {
           records.forEach((record) => {
             core.debug(record.get("Name"));
             core.debug(reviewNames);
@@ -46,13 +46,13 @@ const fetchReviewNames = (labels, issues) => {
           });
 
           fetchNextPage();
-        }),
-        (done = (err) => {
+        },
+        (err) => {
           if (err) {
             reject(err);
           }
           resolve(reviewNames);
-        })
+        }
       );
   });
 
