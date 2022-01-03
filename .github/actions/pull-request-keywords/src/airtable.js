@@ -34,7 +34,9 @@ const fetchReviewNames = (labels, issues) => {
         }
     ).eachPage( (records, fetchNextPage) =>  {
         records.forEach((record) => {
+            core.debug(record.get("Name"));
             reviewNames.push(record.get("Name"));
+
         });
     
         fetchNextPage();
