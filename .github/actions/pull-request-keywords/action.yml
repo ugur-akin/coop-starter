@@ -22,12 +22,15 @@ outputs:
       {Object[]} The list of URLs for the issues that are linked to the pull request
   labels:
     description: >
-      {Object[]} The list of lables that are linked to the pull request
+      The list of lables that are linked to the pull request
   keywords:
     description: >
       The list of keywords hinting at what reviews 
       should be run for the given pull request
-
+  reviews:
+    description: >
+      The list of automated reviews that should be run for the
+      pull request
 runs:
   using: node16
   main: build/index.js

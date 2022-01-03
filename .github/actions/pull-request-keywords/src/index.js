@@ -1,6 +1,7 @@
 import { JSDOM } from "jsdom";
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import { fetchReviewNames } from "./airtable";
 import fetch from 'node-fetch';
 
 const issueHtmlRe = /https:\/\/github.com\/(?<org>.+)\/(?<repo>.+)\/issues\/(?<num>\d+)/
@@ -79,6 +80,9 @@ try {
     core.setOutput('issues', issues);
     core.setOutput('labels', labels);
     core.setOutput('keywords', keywords);
+
+    const reviewNames = fetchReviewNames(labels, issueTitles);
+    core.setOutput('reviews', reviewNames);
 }
 catch (err) {
     core.setFailed(err);
