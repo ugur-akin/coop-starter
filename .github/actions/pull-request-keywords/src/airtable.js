@@ -12,9 +12,13 @@ const lookupTextFormula = (labels, issues) => {
     const labelConditionals = labels.map( (label) => `FIND(${label}, ARRAYJOIN(Labels))`);
     const issueConditionals = issues.map((issue) => `FIND(${issue}, ARRAYJOIN(Issues))`)
 
-    const conditionals = `${labelConditionals.join(', ')}, ${issueConditionals.join(', ')}`
-    const finalFormula = `IF(OR(${conditionals}),1,0)`;
+    const conditionals = labelConditionals.concat(issueConditionals).join(", ");
+    
+    if(!conditionals){
+        return "";
+    }
 
+    const finalFormula = `IF(OR(${conditionals}),1,0)`;
     return finalFormula;
 }
 
