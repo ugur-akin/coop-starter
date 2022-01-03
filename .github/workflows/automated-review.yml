@@ -1,7 +1,7 @@
-name: This workflow tests other workflows!
+name: Review pull request for commonly encountered issues
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened]
 permissions:
   pull-requests: write
 env:
@@ -15,29 +15,22 @@ jobs:
     name: Compile review keywords from PR (currently only labels and 'generic' keyword)
     runs-on: ubuntu-latest
     outputs:
-          # issues: ${{ steps.scrape-pr-info.outputs.issues }}
-          # labels: ${{ steps.scrape-pr-info.outputs.labels }}
-          matrix: "{keywords: ${{ steps.scrape-pr-info.outputs.keywords }}}"
+      issues: ${{ steps.scrape-pr-info.outputs.issues }}
+      labels: ${{ steps.scrape-pr-info.outputs.labels }}
+      keywords: ${{ steps.scrape-pr-info.outputs.keywords }}
+      reviews: ${{ steps.scrape-pr-info.outputs.reviews }}
     steps:
       - uses: actions/checkout@v2
       - id: scrape-pr-info
         name: Get linked issues and labels for related to the PR
-        # TODO: Implement an action to collect PR info
-        #       Scrape PR for linked issues and get labels
-        #       both from issues and from the PR itself.
-        # env: 
-        #   pr_labels: ${{ join(github.event.pull_request.labels.*.name) }}
-        # run: | 
-        #   echo "Scraper not yet implemented!"
-        #   echo "::set-output name=matrix::{\"keyword\": [\"generic\", \"frontend\", $pr_labels]}"
-        # uses: actions/hatchways/collect-pr-info@v1
-        uses: ./.github/actions/compile-pr-info
+        uses: ./.github/actions/pull-request-keywords
         with:
-          URL: ${{ env.URL }}
+          AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+
   init-pr-review:
     name: Initialize the review (Review state will be 'pending')
     runs-on: ubuntu-latest
-    needs: collect-pr-info
     continue-on-error: true
     steps:
       - uses: octokit/request-action@v2.x
@@ -46,8 +39,9 @@ jobs:
           accept: application/vnd.github.v3+json
           owner: ${{ env.OWNER }}
           repo: ${{ env.REPO }}
-          pull_number: ${{ env.PR }}            
+          pull_number: ${{ env.PR }}
           GITHUB_TOKEN: ${{ github.token }}
+
   run-automated-reviews:
     name: >
       Call automated review workflows based on
@@ -57,33 +51,26 @@ jobs:
     if: ${{ needs.collect-pr-info.result == 'success' }}
     continue-on-error: true
     strategy:
-      matrix:  ${{ fromJSON(needs.collect-pr-info.outputs.matrix) }}
+      matrix:
+        reviews: ${{ needs.collect-pr-info.outputs.reviews }}
       fail-fast: false
       max-parallel: 10
     steps:
       - id: start-relevant-reviews
-        # TODO: Implement an action that calls any relevant reviews
-        #       to the specified keyword. The action should be smart about
-        #       not initiating the same review workflow twice! Either output
-        #       or upload artifact showing status for each review.
-        #       Usage:
-        #
-        # name: Call all the workflows that is associated with this PR
-        # uses: actions/hatchways/initiate-review-per-keyword@v1
-        # with:
-        #   URL: ${{ env.URL }}
-        #   keyword: ${{ matrix.keyword }}
-        #   GITHUB_TOKEN: ??
-        name: Echo keyword until implemented
-        env: 
-          keyword: ${{ matrix.keyword }}
+        name: Echo review name until implemented
+        # TODO: Implement a workflow that runs an automated
+        #       review based on the name given.
+        env:
+          review: ${{ matrix.review }}
         run: |
-          echo "$keyword"
+          echo "$review"
+
   submit-or-dismiss-review:
-    name: > 
+    name: >
       Submit or dismiss review based on what/how many reviews
       succeeded
     runs-on: ubuntu-latest
+    needs: run-automated-reviews
     steps:
       - run: echo "I do stat check"
       - run: echo "I send the request"
