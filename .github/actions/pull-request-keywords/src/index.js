@@ -64,18 +64,21 @@ try {
     const issueLabels = issues.map((issue) => issue.labels.name);
     const prLabels = prPayload.labels.map((label) => label.name);
     
-    const keywords = new Set();
-    prLabels.forEach((label) => keywords.add(label));
-    issueTitles.forEach((title) => keywords.add(title));
-    issueLabels.forEach((label) => keywords.add(label));
+    const keywordSet = new Set();
+    prLabels.forEach((label) => keywordSet.add(label));
+    issueTitles.forEach((title) => keywordSet.add(title));
+    issueLabels.forEach((label) => keywordSet.add(label));
 
-    const labels = new Set();
-    issueLabels.forEach((label) => labels.add(label));
-    prLabels.forEach((label) => labels.add(label));
+    const labelSet = new Set();
+    issueLabels.forEach((label) => labelSet.add(label));
+    prLabels.forEach((label) => labelSet.add(label));
     
+    const labels = [...labelSet];
+    const keywords = [...keywordSet]
+
     core.setOutput('issues', issues);
     core.setOutput('labels', labels);
-    core.setOutput('keywords', keywords.values);
+    core.setOutput('keywords', keywords);
 }
 catch (err) {
     core.setFailed(err);
