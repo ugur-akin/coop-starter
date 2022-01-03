@@ -23,7 +23,7 @@ const lookupTextFormula = (labels, issues) => {
 }
 
 
-const fetchReviewNames = async (labels, issues) => {
+const fetchReviewNames = (labels, issues) => {
     const formula = lookupTextFormula(labels, issues);
 
     const reviewNames = [];
