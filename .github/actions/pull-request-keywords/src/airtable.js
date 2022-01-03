@@ -15,7 +15,7 @@ const lookupTextFormula = (labels, issues) => {
     const conditionals = labelConditionals.concat(issueConditionals).join(", ");
     
     if(!conditionals){
-        return "true";
+        return "1";
     }
 
     const finalFormula = `IF(OR(${conditionals}),1,0)`;
