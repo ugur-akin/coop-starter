@@ -20,12 +20,10 @@ inputs:
     description: >
       "Api key for the airtable account"
     required: true
-    default: ${{ secrets.AIRTABLE_API_KEY }}
   AIRTABLE_BASE_ID:
     description: >
       "Id of the airtable base containing review associations"
     required: true
-    default: ${{ secrets.AIRTABLE_BASE_ID }}
 outputs:
   issues:
     description: > 

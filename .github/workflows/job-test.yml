@@ -28,4 +28,5 @@ jobs:
         # uses: actions/hatchways/collect-pr-info@v1
         uses: ./.github/actions/pull-request-keywords
         with:
-          URL: ${{ env.URL }}
+          AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
