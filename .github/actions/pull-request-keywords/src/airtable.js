@@ -41,6 +41,8 @@ const fetchReviewNames = (labels, issues) => {
     }, (err) => {
         core.setFailed(err);
     });
+
+    return reviewNames;
 }
 
 export {fetchReviewNames};
