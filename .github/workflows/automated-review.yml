@@ -61,7 +61,7 @@ jobs:
         # TODO: Implement a workflow that runs an automated
         #       review based on the name given.
         env:
-          review: ${{ matrix.review }}
+          review: ${{ matrix.reviews }}
         run: |
           echo "$review"
 
