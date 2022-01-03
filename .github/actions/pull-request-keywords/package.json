@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "ncc build src/index.js -o build",
-    "test": "node -r dotenv/config build/index.js"
+    "test": "node build/index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +14,6 @@
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
     "airtable": "^0.11.1",
-    "dotenv": "^10.0.0",
     "jsdom": "^19.0.0",
     "node-fetch": "^3.1.0"
   },

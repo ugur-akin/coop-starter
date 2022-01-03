@@ -1,6 +1,10 @@
 import Airtable from "airtable";
+import * as core from "@actions/core";
 
-const base = new Airtable({apiKey: process.env.AIRTABLE_API_KEY}).base(process.env.AIRTABLE_BASE_ID);
+const AIRTABLE_API_KEY = core.getInput("AIRTABLE_API_KEY");
+const AIRTABLE_BASE_ID = core.getInput("AIRTABLE_BASE_ID");
+
+const base = new Airtable({apiKey: AIRTABLE_API_KEY}).base(AIRTABLE_BASE_ID);
 
 const automatedReviewTable = base('Automated Review Association');
 
