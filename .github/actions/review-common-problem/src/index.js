@@ -19,7 +19,7 @@ const run = async () => {
     const auth = core.getInput("GITHUB_TOKEN");
     const octokit = github.getOctokit(auth);
 
-    const pullInput = github.getInput("pull_payload");
+    const pullInput = core.getInput("pull_payload");
     let pullRequest = pullInput && JSON.parse(pullInput);
     if (!pullRequest) {
       const { data: pullPayload } = await octokit.rest.pulls.get({
