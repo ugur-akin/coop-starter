@@ -10653,7 +10653,7 @@
         switch (tag) {
           case "suboptimal-unedited-title":
             const passed = SuboptimalTitleReviewer(pullRequest);
-            octokit.rest.pulls.reviews.put({
+            octokit.rest.pulls.updateReview({
               owner: owner,
               repo: repository,
               pull_number: pullNumber,
