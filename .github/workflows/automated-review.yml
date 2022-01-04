@@ -85,9 +85,9 @@ jobs:
       Submit or dismiss review based on what/how many reviews
       succeeded
     runs-on: ubuntu-latest
-    needs: [init-pr-review, run-automated-reviews]
+    needs: [init-pull-request-review, run-automated-reviews]
     env:
-      REVIEW_ID: ${{ needs.init-pr-review.outputs.review-id }}
+      REVIEW_ID: ${{ needs.init-pull-request-review.outputs.review-id }}
     steps:
       - id: submit-review
         uses: octokit/request-action@v2.x
