@@ -103,5 +103,4 @@ jobs:
           repo: ${{ env.REPOSITORY }}
           pull_number: ${{ env.PULL_NUMBER }}
           review_id: ${{ needs.init-pull-request-review.outputs.review-id }}
-          event: COMMENT
           GITHUB_TOKEN: ${{ github.token }}
