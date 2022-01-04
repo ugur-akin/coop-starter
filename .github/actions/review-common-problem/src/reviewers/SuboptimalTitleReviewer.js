@@ -16,7 +16,7 @@ const SuboptimalTitleReviewer = (pull) => {
     head: { label: headBranch },
   } = pull;
 
-  const defaultTitle = branchToTitle(head);
+  const defaultTitle = branchToTitle(headBranch);
   const passed = defaultTitle !== title;
 
   return passed;
