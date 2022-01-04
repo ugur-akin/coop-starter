@@ -72,7 +72,7 @@ jobs:
           repository: ${{ env.REPOSITORY }}
           pull_number: ${{ env.PULL_NUMBER }}
           review_id: ${{ env.REVIEW_ID }}
-          pull_payload: ${{ github.event.pull_request }}
+          pull_payload: ${{ toJSON(github.event.pull_request) }}
           GITHUB_TOKEN: ${{ github.token }}
   submit-or-dismiss-review:
     name: >
