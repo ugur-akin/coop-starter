@@ -20,7 +20,7 @@ const run = async () => {
     const octokit = github.getOctokit(auth);
 
     const pullInput = github.getInput("pull_payload");
-    let pullRequest = pullInput;
+    let pullRequest = pullInput && JSON.parse(pullInput);
     if (!pullRequest) {
       const { data: pullPayload } = await octokit.rest.pulls.get({
         owner: owner,

@@ -10668,7 +10668,7 @@
 
         const pullInput =
           _actions_github__WEBPACK_IMPORTED_MODULE_1__.getInput("pull_payload");
-        let pullRequest = pullInput;
+        let pullRequest = pullInput && JSON.parse(pullInput);
         if (!pullRequest) {
           const { data: pullPayload } = await octokit.rest.pulls.get({
             owner: owner,
