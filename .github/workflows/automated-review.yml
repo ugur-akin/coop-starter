@@ -1,11 +1,9 @@
 ##############################
-# TODO: Conventionalize cases for actions/workflows
-# TODO: Conventionalize inputs for actions
-# TODO: Clean up
 # TODO: Look into performance optimizations via cache
 # TODO: Look into build matrix job success ideas
 # TODO: Look into getting pending review without id
 #################################
+
 name: Review pull request for commonly encountered issues
 on:
   pull_request:
@@ -15,29 +13,31 @@ permissions:
 env:
   URL: ${{ github.event.pull_request.url}}
   OWNER: ${{ github.event.repository.owner.login }}
-  REPO: ${{ github.event.repository.name }}
-  PR: ${{ github.event.pull_request.number }}
-  PR_PAYLOAD: ${{ toJSON(github.event.pull_request)}}
+  REPOSITORY: ${{ github.event.repository.name }}
+  PULL_NUMBER: ${{ github.event.pull_request.number }}
+  PULL_PAYLOAD: ${{ toJSON(github.event.pull_request)}}
 jobs:
   collect-pr-info:
-    name: Compile review keywords from PR (currently only labels and 'generic' keyword)
+    name: >
+      Collects metadata information about the pull request and compiles 
+      a list of common problems that the pull request should be checked for
     runs-on: ubuntu-latest
     outputs:
-      issues: ${{ steps.scrape-pr-info.outputs.issues }}
-      labels: ${{ steps.scrape-pr-info.outputs.labels }}
-      keywords: ${{ steps.scrape-pr-info.outputs.keywords }}
-      reviews: ${{ steps.scrape-pr-info.outputs.reviews }}
+      issues: ${{ steps.pull-request-metadata.outputs.issues }}
+      labels: ${{ steps.pull-request-metadata.outputs.labels }}
+      keywords: ${{ steps.pull-request-metadata.outputs.keywords }}
+      common-problem-tags: ${{ steps.pull-request-metadata.outputs.common-problems }}
     steps:
       - uses: actions/checkout@v2
-      - id: scrape-pr-info
-        name: Get linked issues and labels for related to the PR
-        uses: ./.github/actions/pull-request-keywords
+      - id: pull-request-metadata
+        name: Collect metadata information about thepull request
+        uses: ./.github/actions/pull-request-metadata
         with:
           AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
           AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
 
-  init-pr-review:
-    name: Initialize the review (review state will be 'pending')
+  init-pull-request-review:
+    name: Initialize a review (review state will be 'pending')
     runs-on: ubuntu-latest
     outputs:
       review-id: ${{ steps.init-review.outputs.data.id }}
@@ -48,8 +48,8 @@ jobs:
           route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews
           accept: application/vnd.github.v3+json
           owner: ${{ env.OWNER }}
-          repo: ${{ env.REPO }}
-          pull_number: ${{ env.PR }}
+          repo: ${{ env.REPOSITORY }}
+          pull_number: ${{ env.PULL_NUMBER }}
           GITHUB_TOKEN: ${{ github.token }}
 
   run-automated-reviews:
@@ -62,22 +62,22 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        review: ${{ fromJSON(needs.collect-pr-info.outputs.reviews) }}
+        tag: ${{ fromJSON(needs.collect-pr-info.outputs.common-problem-tags) }}
       fail-fast: false
       max-parallel: 10
     env:
-      common-issue-tag: ${{ matrix.review }}
-      review-id: ${{ needs.init-pr-review.outputs.review-id }}
+      COMMON_PROBLEM_TAG: ${{ matrix.tag }}
+      REVIEW_ID: ${{ needs.init-pr-review.outputs.review-id }}
     steps:
       # TODO: Implement this action
       - uses: actions/checkout@v2.x
-      - uses: ./.github/actions/review-for-common-issue
+      - uses: ./.github/actions/review-for-common-problem
         with:
-          common-issue-tag: ${{ env.common-issue-tag }}
+          for: ${{ env.COMMON_PROBLEM_TAG }}
           owner: ${{ env.OWNER }}
-          repository: ${{ env.REPO }}
-          pull_number: ${{ env.PR }}
-          review_id: ${{ env.review-id }}
+          repository: ${{ env.REPOSITORY }}
+          pull_number: ${{ env.PULL_NUMBER }}
+          review_id: ${{ env.REVIEW_ID }}
           pull_payload: ${{ github.event.pull_request }}
           GITHUB_TOKEN: ${{ github.token }}
   submit-or-dismiss-review:
@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [init-pr-review, run-automated-reviews]
     env:
-      review-id: ${{ needs.init-pr-review.outputs.review-id }}
+      REVIEW_ID: ${{ needs.init-pr-review.outputs.review-id }}
     steps:
       - id: submit-review
         uses: octokit/request-action@v2.x
@@ -95,9 +95,9 @@ jobs:
           route: PUT /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/events
           accept: application/vnd.github.v3+json
           owner: ${{ env.OWNER }}
-          repo: ${{ env.REPO }}
-          pull_number: ${{ env.PR }}
-          review_id: ${{ env.review-id }}
+          repo: ${{ env.REPOSITORY }}
+          pull_number: ${{ env.PULL_NUMBER }}
+          review_id: ${{ env.REVIEW_ID }}
           GITHUB_TOKEN: ${{ github.token }}
       - id: dismiss-review
         if: ${{ failure() }}
@@ -106,8 +106,8 @@ jobs:
           route: DELETE /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}
           accept: application/vnd.github.v3+json
           owner: ${{ env.OWNER }}
-          repo: ${{ env.REPO }}
-          pull_number: ${{ env.PR }}
+          repo: ${{ env.REPOSITORY }}
+          pull_number: ${{ env.PULL_NUMBER }}
           review_id: ${{ env.review-id }}
           event: COMMENT
           GITHUB_TOKEN: ${{ github.token }}
