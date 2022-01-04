@@ -64,7 +64,7 @@ jobs:
       REVIEW_ID: ${{ needs.init-pr-review.outputs.review-id }}
     steps:
       # TODO: Implement this action
-      - uses: actions/checkout@v2.x
+      - uses: actions/checkout@v2
       - uses: ./.github/actions/review-common-problem
         with:
           for: ${{ env.COMMON_PROBLEM_TAG }}
