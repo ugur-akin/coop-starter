@@ -35,6 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       review-id: ${{ steps.init-review.outputs.data.id }}
+    continue-on-error: true
     steps:
       - id: init-review
         uses: octokit/request-action@v2.x
@@ -102,6 +103,6 @@ jobs:
           owner: ${{ env.OWNER }}
           repo: ${{ env.REPOSITORY }}
           pull_number: ${{ env.PULL_NUMBER }}
-          review_id: ${{ env.review-id }}
+          review_id: ${{ needs.init-pull-request-review.outputs.review-id }}
           event: COMMENT
           GITHUB_TOKEN: ${{ github.token }}
