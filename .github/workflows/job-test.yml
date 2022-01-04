@@ -34,8 +34,7 @@ jobs:
     name: Initialize a review (review state will be 'pending')
     runs-on: ubuntu-latest
     outputs:
-      review-id: ${{ steps.init-review.outputs.data.id }}
-    continue-on-error: true
+      review-id: ${{ fromJSON(steps.init-review.outputs.data).id }}
     steps:
       - id: init-review
         uses: octokit/request-action@v2.x
