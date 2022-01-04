@@ -20,7 +20,7 @@ jobs:
       issues: ${{ steps.pull-request-metadata.outputs.issues }}
       labels: ${{ steps.pull-request-metadata.outputs.labels }}
       keywords: ${{ steps.pull-request-metadata.outputs.keywords }}
-      common-problem-tags: ${{ steps.pull-request-metadata.outputs.common-problems }}
+      common-problem-tags: ${{ steps.pull-request-metadata.outputs.common-problem-tags }}
     steps:
       - uses: actions/checkout@v2
       - id: pull-request-metadata
@@ -65,7 +65,7 @@ jobs:
     steps:
       # TODO: Implement this action
       - uses: actions/checkout@v2.x
-      - uses: ./.github/actions/review-for-common-problem
+      - uses: ./.github/actions/review-common-problem
         with:
           for: ${{ env.COMMON_PROBLEM_TAG }}
           owner: ${{ env.OWNER }}
@@ -79,9 +79,9 @@ jobs:
       Submit or dismiss review based on what/how many reviews
       succeeded
     runs-on: ubuntu-latest
-    needs: [init-pr-review, run-automated-reviews]
+    needs: [init-pull-request-review, run-automated-reviews]
     env:
-      REVIEW_ID: ${{ needs.init-pr-review.outputs.review-id }}
+      REVIEW_ID: ${{ needs.init-pull-request-review.outputs.review-id }}
     steps:
       - id: submit-review
         uses: octokit/request-action@v2.x
