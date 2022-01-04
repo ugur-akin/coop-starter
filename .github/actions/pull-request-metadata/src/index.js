@@ -1,7 +1,7 @@
 import { JSDOM } from "jsdom";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import { fetchReviewNames } from "./airtable";
+import { fetchProblemTags } from "./airtable";
 import fetch from "node-fetch";
 
 const issueHtmlRe =
@@ -86,8 +86,8 @@ const run = async () => {
     core.setOutput("labels", labels);
     core.setOutput("keywords", keywords);
 
-    const reviewNames = await fetchReviewNames(labels, issueTitles);
-    core.setOutput("reviews", reviewNames);
+    const commonProblemTags = await fetchProblemTags(labels, issueTitles);
+    core.setOutput("common-problem-tags", commonProblemTags);
   } catch (err) {
     core.setFailed(err);
   }

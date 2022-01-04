@@ -26,7 +26,7 @@ jobs:
       issues: ${{ steps.pull-request-metadata.outputs.issues }}
       labels: ${{ steps.pull-request-metadata.outputs.labels }}
       keywords: ${{ steps.pull-request-metadata.outputs.keywords }}
-      common-problem-tags: ${{ steps.pull-request-metadata.outputs.common-problems }}
+      common-problem-tags: ${{ steps.pull-request-metadata.outputs.common-problem-tags }}
     steps:
       - uses: actions/checkout@v2
       - id: pull-request-metadata
@@ -71,7 +71,7 @@ jobs:
     steps:
       # TODO: Implement this action
       - uses: actions/checkout@v2.x
-      - uses: ./.github/actions/review-for-common-problem
+      - uses: ./.github/actions/review-common-problem
         with:
           for: ${{ env.COMMON_PROBLEM_TAG }}
           owner: ${{ env.OWNER }}

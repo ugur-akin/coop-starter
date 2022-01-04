@@ -1,4 +1,4 @@
-name: Pull Request Keywords
+name: Pull Request Metadata Scan
 author: hatchways
 description: |
   This action scrapes the given pull request page on Github,
@@ -35,7 +35,7 @@ outputs:
     description: >
       The list of keywords hinting at what reviews 
       should be run for the given pull request
-  reviews:
+  common-problem-tags:
     description: >
       The list of automated reviews that should be run for the
       pull request

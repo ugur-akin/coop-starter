@@ -26,7 +26,7 @@ const lookupTextFormula = (labels, issues) => {
   return finalFormula;
 };
 
-const fetchReviewNames = (labels, issues) => {
+const fetchProblemTags = (labels, issues) => {
   const formula = lookupTextFormula(labels, issues);
 
   const fetchResult = new Promise((resolve, reject) => {
@@ -59,4 +59,4 @@ const fetchReviewNames = (labels, issues) => {
   return fetchResult;
 };
 
-export { fetchReviewNames };
+export { fetchProblemTags };
