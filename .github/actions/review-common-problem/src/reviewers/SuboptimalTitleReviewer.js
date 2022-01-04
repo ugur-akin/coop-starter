@@ -21,3 +21,5 @@ const SuboptimalTitleReviewer = (pull) => {
 
   return passed;
 };
+
+export { SuboptimalTitleReviewer };

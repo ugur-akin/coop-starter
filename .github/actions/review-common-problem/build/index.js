@@ -10558,50 +10558,6 @@
   }
   /******/
   /************************************************************************/
-  /******/ /* webpack/runtime/compat get default export */
-  /******/ (() => {
-    /******/ // getDefaultExport function for compatibility with non-harmony modules
-    /******/ __nccwpck_require__.n = (module) => {
-      /******/ var getter =
-        module && module.__esModule
-          ? /******/ () => module["default"]
-          : /******/ () => module;
-      /******/ __nccwpck_require__.d(getter, { a: getter });
-      /******/ return getter;
-      /******/
-    };
-    /******/
-  })();
-  /******/
-  /******/ /* webpack/runtime/define property getters */
-  /******/ (() => {
-    /******/ // define getter functions for harmony exports
-    /******/ __nccwpck_require__.d = (exports, definition) => {
-      /******/ for (var key in definition) {
-        /******/ if (
-          __nccwpck_require__.o(definition, key) &&
-          !__nccwpck_require__.o(exports, key)
-        ) {
-          /******/ Object.defineProperty(exports, key, {
-            enumerable: true,
-            get: definition[key],
-          });
-          /******/
-        }
-        /******/
-      }
-      /******/
-    };
-    /******/
-  })();
-  /******/
-  /******/ /* webpack/runtime/hasOwnProperty shorthand */
-  /******/ (() => {
-    /******/ __nccwpck_require__.o = (obj, prop) =>
-      Object.prototype.hasOwnProperty.call(obj, prop);
-    /******/
-  })();
-  /******/
   /******/ /* webpack/runtime/make namespace object */
   /******/ (() => {
     /******/ // define __esModule on exports
@@ -10628,19 +10584,36 @@
   // This entry need to be wrapped in an IIFE because it need to be in strict mode.
   (() => {
     "use strict";
+    // ESM COMPAT FLAG
     __nccwpck_require__.r(__webpack_exports__);
-    /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ =
-      __nccwpck_require__(2186);
-    /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default =
-      /*#__PURE__*/ __nccwpck_require__.n(
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__
-      );
-    /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ =
-      __nccwpck_require__(5438);
-    /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default =
-      /*#__PURE__*/ __nccwpck_require__.n(
-        _actions_github__WEBPACK_IMPORTED_MODULE_1__
-      );
+
+    // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+    var core = __nccwpck_require__(2186);
+    // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+    var github = __nccwpck_require__(5438); // CONCATENATED MODULE: ./src/reviewers/SuboptimalTitleReviewer.js
+    // TODO: Implement a class/inheritance based design here?
+
+    const wsReplaced = /-_/;
+
+    const branchToTitle = (str) => {
+      const removeLines = str.replace(wsReplaced, " ");
+      const capitalized = str.charAt(0).toUpperCase() + str.slice(1);
+
+      return capitalized;
+    };
+
+    const SuboptimalTitleReviewer = (pull) => {
+      const {
+        title,
+        base: { label: baseBranch },
+        head: { label: headBranch },
+      } = pull;
+
+      const defaultTitle = branchToTitle(head);
+      const passed = defaultTitle !== title;
+
+      return passed;
+    }; // CONCATENATED MODULE: ./src/index.js
 
     /**
      * TODO: Implement a design pattern for reviewers:
@@ -10652,22 +10625,15 @@
 
     const run = async () => {
       try {
-        const tag = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("for");
-        const owner =
-          _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("owner");
-        const repository =
-          _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("repository");
-        const pullNumber =
-          _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("pull_number");
-        const reviewId =
-          _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("review_id");
-        const auth =
-          _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("GITHUB_TOKEN");
-        const octokit =
-          _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(auth);
+        const tag = core.getInput("for");
+        const owner = core.getInput("owner");
+        const repository = core.getInput("repository");
+        const pullNumber = core.getInput("pull_number");
+        const reviewId = core.getInput("review_id");
+        const auth = core.getInput("GITHUB_TOKEN");
+        const octokit = github.getOctokit(auth);
 
-        const pullInput =
-          _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("pull_payload");
+        const pullInput = core.getInput("pull_payload");
         let pullRequest = pullInput && JSON.parse(pullInput);
         if (!pullRequest) {
           const { data: pullPayload } = await octokit.rest.pulls.get({
@@ -10699,7 +10665,7 @@
             );
         }
       } catch (err) {
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(err);
+        core.setFailed(err);
       }
     };
 

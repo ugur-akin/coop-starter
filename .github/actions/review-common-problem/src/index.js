@@ -1,5 +1,6 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
+import { SuboptimalTitleReviewer } from "./reviewers/SuboptimalTitleReviewer";
 
 /**
  * TODO: Implement a design pattern for reviewers:
