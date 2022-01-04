@@ -61,7 +61,7 @@ jobs:
       max-parallel: 10
     env:
       COMMON_PROBLEM_TAG: ${{ matrix.tag }}
-      REVIEW_ID: ${{ needs.init-pr-review.outputs.review-id }}
+      REVIEW_ID: ${{ needs.init-pull-request-review.outputs.review-id }}
     steps:
       # TODO: Implement this action
       - uses: actions/checkout@v2

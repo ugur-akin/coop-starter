@@ -35,8 +35,6 @@ const run = async () => {
       pullRequest = pullPayload;
     }
 
-    core.debug(pullRequest);
-
     switch (tag) {
       case "suboptimal-unedited-title":
         const passed = SuboptimalTitleReviewer(pullRequest);
