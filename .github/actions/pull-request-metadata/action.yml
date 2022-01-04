@@ -5,13 +5,13 @@ description: |
   searches for any linked issues, labels and any labels 
   associated with the linked issues. Outputs a list of keywords
   based on scraped information that should be used to determine
-  what review processes should be run for the given pull request. 
+  what review processes should be run for the given pull request.
 inputs:
-  URL: 
+  URL:
     description: "URL of the pull request"
     required: true
     default: ${{ github.event.pull_request.pull_request.html_url }}
-  GITHUB_TOKEN: 
+  GITHUB_TOKEN:
     description: >
       "Github token used for authenticating API requests"
     required: true
@@ -26,7 +26,7 @@ inputs:
     required: true
 outputs:
   issues:
-    description: > 
+    description: >
       {Object[]} The list of URLs for the issues that are linked to the pull request
   labels:
     description: >

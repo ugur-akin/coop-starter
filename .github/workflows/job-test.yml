@@ -1,32 +1,107 @@
 name: This workflow tests other workflows!
-on: 
+on:
   pull_request:
     types: [opened, reopened, synchronize]
+permissions:
+  pull-requests: write
 env:
-  URL: https://github.com/hatchways/team-reindeer/pull/66
-  OWNER: hatchways
-  REPO: team-reindeer
-  PR: 66
+  URL: ${{ github.event.pull_request.url}}
+  OWNER: ${{ github.event.repository.owner.login }}
+  REPOSITORY: ${{ github.event.repository.name }}
+  PULL_NUMBER: ${{ github.event.pull_request.number }}
+  PULL_PAYLOAD: ${{ toJSON(github.event.pull_request)}}
 jobs:
   collect-pr-info:
-    name: Compile review keywords from PR (currently only labels and 'generic' keyword)
+    name: >
+      Collects metadata information about the pull request and compiles 
+      a list of common problems that the pull request should be checked for
     runs-on: ubuntu-latest
     outputs:
-          issues: ${{ steps.scrape-pr-info.outputs.issues }}
-          labels: ${{ steps.scrape-pr-info.outputs.labels }}
-          matrix: "{keywords: ${{ steps.scrape-pr-info.outputs.keywords }}}"
+      issues: ${{ steps.pull-request-metadata.outputs.issues }}
+      labels: ${{ steps.pull-request-metadata.outputs.labels }}
+      keywords: ${{ steps.pull-request-metadata.outputs.keywords }}
+      common-problem-tags: ${{ steps.pull-request-metadata.outputs.common-problems }}
     steps:
       - uses: actions/checkout@v2
-      - run: ls ./
-      - id: scrape-pr-info
-        name: Get linked issues and labels for related to the PR
-        # env: 
-        #   pr_labels: ${{ join(github.event.pull_request.labels.*.name) }}
-        # run: | 
-        #   echo "Scraper not yet implemented!"
-        #   echo "::set-output name=matrix::{\"keyword\": [\"generic\", \"frontend\", $pr_labels]}"
-        # uses: actions/hatchways/collect-pr-info@v1
-        uses: ./.github/actions/pull-request-keywords
+      - id: pull-request-metadata
+        name: Collect metadata information about thepull request
+        uses: ./.github/actions/pull-request-metadata
         with:
           AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
           AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+
+  init-pull-request-review:
+    name: Initialize a review (review state will be 'pending')
+    runs-on: ubuntu-latest
+    outputs:
+      review-id: ${{ steps.init-review.outputs.data.id }}
+    steps:
+      - id: init-review
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews
+          accept: application/vnd.github.v3+json
+          owner: ${{ env.OWNER }}
+          repo: ${{ env.REPOSITORY }}
+          pull_number: ${{ env.PULL_NUMBER }}
+          GITHUB_TOKEN: ${{ github.token }}
+
+  run-automated-reviews:
+    name: >
+      Call automated review workflows based on
+      linked PR issues and labels
+    runs-on: ubuntu-latest
+    needs: [collect-pr-info, init-pr-review]
+    if: ${{ needs.collect-pr-info.result == 'success' }}
+    continue-on-error: true
+    strategy:
+      matrix:
+        tag: ${{ fromJSON(needs.collect-pr-info.outputs.common-problem-tags) }}
+      fail-fast: false
+      max-parallel: 10
+    env:
+      COMMON_PROBLEM_TAG: ${{ matrix.tag }}
+      REVIEW_ID: ${{ needs.init-pr-review.outputs.review-id }}
+    steps:
+      # TODO: Implement this action
+      - uses: actions/checkout@v2.x
+      - uses: ./.github/actions/review-for-common-problem
+        with:
+          for: ${{ env.COMMON_PROBLEM_TAG }}
+          owner: ${{ env.OWNER }}
+          repository: ${{ env.REPOSITORY }}
+          pull_number: ${{ env.PULL_NUMBER }}
+          review_id: ${{ env.REVIEW_ID }}
+          pull_payload: ${{ github.event.pull_request }}
+          GITHUB_TOKEN: ${{ github.token }}
+  submit-or-dismiss-review:
+    name: >
+      Submit or dismiss review based on what/how many reviews
+      succeeded
+    runs-on: ubuntu-latest
+    needs: [init-pr-review, run-automated-reviews]
+    env:
+      REVIEW_ID: ${{ needs.init-pr-review.outputs.review-id }}
+    steps:
+      - id: submit-review
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/events
+          accept: application/vnd.github.v3+json
+          owner: ${{ env.OWNER }}
+          repo: ${{ env.REPOSITORY }}
+          pull_number: ${{ env.PULL_NUMBER }}
+          review_id: ${{ env.REVIEW_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
+      - id: dismiss-review
+        if: ${{ failure() }}
+        uses: octokit/request-action@v2.x
+        with:
+          route: DELETE /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}
+          accept: application/vnd.github.v3+json
+          owner: ${{ env.OWNER }}
+          repo: ${{ env.REPOSITORY }}
+          pull_number: ${{ env.PULL_NUMBER }}
+          review_id: ${{ env.review-id }}
+          event: COMMENT
+          GITHUB_TOKEN: ${{ github.token }}
