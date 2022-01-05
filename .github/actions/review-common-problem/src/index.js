@@ -42,6 +42,7 @@ const run = async () => {
           owner: owner,
           repo: repository,
           pull_number: pullNumber,
+          path: ".github/actions/.gitignore",
           // review_id: reviewId,
           body: "Please use a descriptive title as close to plain english as possible.",
           position: 1,
