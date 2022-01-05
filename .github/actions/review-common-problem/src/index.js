@@ -47,8 +47,8 @@ const run = async () => {
           body: "Please use a descriptive title as close to plain english as possible.",
           line: 1,
           side: "RIGHT",
-          commit_id: "048a3f00a383d61b76e52da89ce19fa1dd6f276a",
-          // commit_id: "a1f107360f4b011330f9e49c2af1dc5e87284f27",
+          // commit_id: "048a3f00a383d61b76e52da89ce19fa1dd6f276a",
+          commit_id: "a1f107360f4b011330f9e49c2af1dc5e87284f27",
         });
         break;
       default:
