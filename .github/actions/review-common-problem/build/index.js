@@ -10651,12 +10651,13 @@
         switch (tag) {
           case "suboptimal-unedited-title":
             const passed = SuboptimalTitleReviewer(pullRequest);
-            octokit.rest.pulls.updateReview({
+            octokit.rest.pulls.createReviewComment({
               owner: owner,
               repo: repository,
               pull_number: pullNumber,
-              review_id: reviewId,
+              // review_id: reviewId,
               body: "Please use a descriptive title as close to plain english as possible.",
+              position: 1,
             });
             break;
           default:
