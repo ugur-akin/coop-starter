@@ -34,6 +34,7 @@ jobs:
     name: Initialize a review (review state will be 'pending')
     runs-on: ubuntu-latest
     outputs:
+      commit-id: ${{ fromJSON(steps.init-review.outputs.data).commit_id}}
       review-id: ${{ fromJSON(steps.init-review.outputs.data).id }}
     steps:
       - id: init-review
@@ -62,6 +63,7 @@ jobs:
     env:
       COMMON_PROBLEM_TAG: ${{ matrix.tag }}
       REVIEW_ID: ${{ needs.init-pull-request-review.outputs.review-id }}
+      COMMIT_ID: ${{ needs.init-pull-request-review.outputs.commit-id }}
     steps:
       # TODO: Implement this action
       - uses: actions/checkout@v2
@@ -72,6 +74,7 @@ jobs:
           repository: ${{ env.REPOSITORY }}
           pull_number: ${{ env.PULL_NUMBER }}
           review_id: ${{ env.REVIEW_ID }}
+          commit_id: ${{ env.COMMIT_ID }}
           pull_payload: ${{ toJSON(github.event.pull_request) }}
           GITHUB_TOKEN: ${{ github.token }}
   submit-or-dismiss-review:

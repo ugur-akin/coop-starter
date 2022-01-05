@@ -10630,6 +10630,7 @@
         const repository = core.getInput("repository");
         const pullNumber = core.getInput("pull_number");
         const reviewId = core.getInput("review_id");
+        const commitId = core.getInput("commit_id");
         const auth = core.getInput("GITHUB_TOKEN");
         const octokit = github.getOctokit(auth);
 
@@ -10660,8 +10661,7 @@
               body: "Please use a descriptive title as close to plain english as possible.",
               line: 1,
               side: "RIGHT",
-              // commit_id: "048a3f00a383d61b76e52da89ce19fa1dd6f276a",
-              commit_id: "a1f107360f4b011330f9e49c2af1dc5e87284f27",
+              commit_id: commitId,
             });
             break;
           default:
