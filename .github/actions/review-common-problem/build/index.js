@@ -10658,7 +10658,8 @@
               path: ".github/actions/.gitignore",
               // review_id: reviewId,
               body: "Please use a descriptive title as close to plain english as possible.",
-              position: 1,
+              line: 1,
+              side: "RIGHT",
             });
             break;
           default:
