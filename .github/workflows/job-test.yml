@@ -87,11 +87,14 @@ jobs:
       - id: submit-review
         uses: octokit/request-action@v2.x
         with:
-          route: PUT /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/events
+          route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/events
           owner: ${{ env.OWNER }}
           repo: ${{ env.REPOSITORY }}
           pull_number: ${{ env.PULL_NUMBER }}
           review_id: ${{ env.REVIEW_ID }}
+          body: >
+            "Hey I'm a bot reviewer and this is my review: \\*mic drop\\*"
+
       - id: dismiss-review
         if: ${{ failure() }}
         uses: octokit/request-action@v2.x
