@@ -10,10 +10,10 @@ const automatedReviewTable = base("Automated Review Association");
 
 const lookupTextFormula = (labels, issues) => {
   const labelConditionals = labels.map(
-    (label) => `FIND(${label}, ARRAYJOIN(Labels))`
+    (label) => `FIND("${label}", ARRAYJOIN(Labels))`
   );
   const issueConditionals = issues.map(
-    (issue) => `FIND(${issue}, ARRAYJOIN(Issues))`
+    (issue) => `FIND("${issue}", ARRAYJOIN(Issues))`
   );
 
   const conditionals = labelConditionals.concat(issueConditionals).join(", ");
@@ -35,7 +35,7 @@ const fetchProblemTags = (labels, issues) => {
 
     automatedReviewTable
       .select({
-        fields: ["Name"],
+        fields: ["Name", "Category"],
         filterByFormula: formula,
       })
       .eachPage(

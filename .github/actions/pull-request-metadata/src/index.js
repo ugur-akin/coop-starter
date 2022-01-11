@@ -7,7 +7,7 @@ import fetch from "node-fetch";
 const issueHtmlRe =
   /https:\/\/github.com\/(?<org>.+)\/(?<repo>.+)\/issues\/(?<num>\d+)/;
 
-// Run below for every review
+// The labels below are used for every pull
 const additionalLabels = ["generic"];
 
 const fetchPullRequest = async (url) => {
