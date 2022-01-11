@@ -64,8 +64,12 @@ jobs:
     # TODO: Outputs
     env:
       CATEGORY: ${{ matrix.category }}
-      TAGS: ${{ fromJSON(format('needs.collect-pr-info.outputs.tags.{0}', matrix.category)) }}
+      TAGS: ${{ toJSON(needs.collect-pr-info.outputs.tags) }}
     steps:
+      - id: get-tags
+        run: |
+          echo $TAGS | jq '.$CATEGORY' >> ./temp.txt
+          cat ./temp.txt
       - uses: actions/checkout@v2
       - uses: ./.github/actions/review-common-problem
         with:
