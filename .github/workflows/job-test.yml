@@ -20,90 +20,93 @@ jobs:
       issues: ${{ steps.pull-request-metadata.outputs.issues }}
       labels: ${{ steps.pull-request-metadata.outputs.labels }}
       keywords: ${{ steps.pull-request-metadata.outputs.keywords }}
-      common-problem-tags: ${{ steps.pull-request-metadata.outputs.common-problem-tags }}
+      categories: ${{ steps.pull-request-metadata.outputs.categories }}
+      tags: ${{ steps.pull-request-metadata.outputs.cpt-map }}
     steps:
       - uses: actions/checkout@v2
       - id: pull-request-metadata
-        name: Collect metadata information about thepull request
+        name: Collect metadata information about the pull request
         uses: ./.github/actions/pull-request-metadata
         with:
           AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
           AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
 
-  init-pull-request-review:
-    name: Initialize a review (review state will be 'pending')
-    runs-on: ubuntu-latest
-    outputs:
-      commit-id: ${{ fromJSON(steps.init-review.outputs.data).commit_id}}
-      review-id: ${{ fromJSON(steps.init-review.outputs.data).id }}
-    steps:
-      - id: init-review
-        uses: octokit/request-action@v2.x
-        with:
-          route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews
-          owner: ${{ env.OWNER }}
-          repo: ${{ env.REPOSITORY }}
-          pull_number: ${{ env.PULL_NUMBER }}
-    env:
-      GITHUB_TOKEN: ${{ github.token }}
+  # NOTE: Made bsolete due to Github REST API issues
+  # init-pull-request-review:
+  #   name: Initialize a review (review state will be 'pending')
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     commit-id: ${{ fromJSON(steps.init-review.outputs.data).commit_id}}
+  #     review-id: ${{ fromJSON(steps.init-review.outputs.data).id }}
+  #   steps:
+  #     - id: init-review
+  #       uses: octokit/request-action@v2.x
+  #       with:
+  #         route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews
+  #         owner: ${{ env.OWNER }}
+  #         repo: ${{ env.REPOSITORY }}
+  #         pull_number: ${{ env.PULL_NUMBER }}
+  #   env:
+  #     GITHUB_TOKEN: ${{ github.token }}
 
   run-automated-reviews:
     name: >
       Call automated review workflows based on
       linked PR issues and labels
     runs-on: ubuntu-latest
-    needs: [collect-pr-info, init-pull-request-review]
-    if: ${{ needs.collect-pr-info.result == 'success' }}
+    needs: collect-pr-info
     continue-on-error: true
     strategy:
       matrix:
-        tag: ${{ fromJSON(needs.collect-pr-info.outputs.common-problem-tags) }}
+        category: ${{ fromJSON(needs.collect-pr-info.outputs.categories) }}
       fail-fast: false
       max-parallel: 10
+    # TODO: Outputs
     env:
-      COMMON_PROBLEM_TAG: ${{ matrix.tag }}
-      REVIEW_ID: ${{ needs.init-pull-request-review.outputs.review-id }}
-      COMMIT_ID: ${{ needs.init-pull-request-review.outputs.commit-id }}
+      CATEGORY: ${{ matrix.category }}
+      TAGS: ${{ fromJSON(format('needs.collect-pr-info.outputs.tags.{0}', matrix.category)) }}
     steps:
-      # TODO: Implement this action
       - uses: actions/checkout@v2
       - uses: ./.github/actions/review-common-problem
         with:
-          for: ${{ env.COMMON_PROBLEM_TAG }}
+          for: ${{ env.CATEGORY }}
+          tags: ${{ env.TAGS }}
           owner: ${{ env.OWNER }}
           repository: ${{ env.REPOSITORY }}
           pull_number: ${{ env.PULL_NUMBER }}
-          review_id: ${{ env.REVIEW_ID }}
-          commit_id: ${{ env.COMMIT_ID }}
           pull_payload: ${{ toJSON(github.event.pull_request) }}
           GITHUB_TOKEN: ${{ github.token }}
-  submit-or-dismiss-review:
-    name: >
-      Submit or dismiss review based on what/how many reviews
-      succeeded
-    runs-on: ubuntu-latest
-    needs: [init-pull-request-review, run-automated-reviews]
-    env:
-      GITHUB_TOKEN: ${{ github.token }}
-      REVIEW_ID: ${{ needs.init-pull-request-review.outputs.review-id }}
-    steps:
-      - id: submit-review
-        uses: octokit/request-action@v2.x
-        with:
-          route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/events
-          owner: ${{ env.OWNER }}
-          repo: ${{ env.REPOSITORY }}
-          pull_number: ${{ env.PULL_NUMBER }}
-          review_id: ${{ env.REVIEW_ID }}
-          body: >
-            "Hey I'm a bot reviewer and this is my review: \\*mic drop\\*"
-          event: "COMMENT"
-      - id: dismiss-review
-        if: ${{ failure() }}
-        uses: octokit/request-action@v2.x
-        with:
-          route: DELETE /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}
-          owner: ${{ env.OWNER }}
-          repo: ${{ env.REPOSITORY }}
-          pull_number: ${{ env.PULL_NUMBER }}
-          review_id: ${{ needs.init-pull-request-review.outputs.review-id }}
+
+  # TODO: Conclude WF
+
+  # NOTE: Made obsolete because of Github REST API
+  # submit-or-dismiss-review:
+  #   name: >
+  #     Submit or dismiss review based on what/how many reviews
+  #     succeeded
+  #   runs-on: ubuntu-latest
+  #   needs: [init-pull-request-review, run-automated-reviews]
+  #   env:
+  #     GITHUB_TOKEN: ${{ github.token }}
+  #     REVIEW_ID: ${{ needs.init-pull-request-review.outputs.review-id }}
+  #   steps:
+  #     - id: submit-review
+  #       uses: octokit/request-action@v2.x
+  #       with:
+  #         route: POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/events
+  #         owner: ${{ env.OWNER }}
+  #         repo: ${{ env.REPOSITORY }}
+  #         pull_number: ${{ env.PULL_NUMBER }}
+  #         review_id: ${{ env.REVIEW_ID }}
+  #         body: >
+  #           "Hey I'm a bot reviewer and this is my review: \\*mic drop\\*"
+  #         event: "COMMENT"
+  #     - id: dismiss-review
+  #       if: ${{ failure() }}
+  #       uses: octokit/request-action@v2.x
+  #       with:
+  #         route: DELETE /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}
+  #         owner: ${{ env.OWNER }}
+  #         repo: ${{ env.REPOSITORY }}
+  #         pull_number: ${{ env.PULL_NUMBER }}
+  #         review_id: ${{ needs.init-pull-request-review.outputs.review-id }}
