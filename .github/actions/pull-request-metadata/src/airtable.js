@@ -31,8 +31,7 @@ const fetchProblemTags = (labels, issues) => {
 
   const fetchResult = new Promise((resolve, reject) => {
     const categories = new Set();
-    const tags = new Set();
-    const groupedByCategory = new Map();
+    const tags = {};
 
     automatedReviewTable
       .select({
@@ -46,13 +45,12 @@ const fetchProblemTags = (labels, issues) => {
             const category = record.get("Category");
 
             categories.add(category);
-            tags.add(tag);
 
-            if (groupedByCategory.has(category)) {
-              const prev = groupedByCategory.get(category);
-              groupedByCategory.set(category, [...prev, tag]);
+            if (tags.hasOwnProperty(category)) {
+              const prev = tags[category];
+              tags[category] = [...prev, tag];
             } else {
-              groupedByCategory.set(category, [tag]);
+              tags[category] = [tag];
             }
           });
 
@@ -62,7 +60,7 @@ const fetchProblemTags = (labels, issues) => {
           if (err) {
             reject(err);
           }
-          resolve({ categories, tags, groupedByCategory });
+          resolve({ categories, tags });
         }
       );
   });

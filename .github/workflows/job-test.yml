@@ -21,8 +21,7 @@ jobs:
       labels: ${{ steps.pull-request-metadata.outputs.labels }}
       keywords: ${{ steps.pull-request-metadata.outputs.keywords }}
       categories: ${{ steps.pull-request-metadata.outputs.categories }}
-      tags: ${{ steps.pull-request-metadata.outputs.tags }}
-      matrix: ${{ steps.pull-request-metadata.outputs.matrix }}
+      tags: ${{ toJSON(steps.pull-request-metadata.outputs.tags) }}
     steps:
       - uses: actions/checkout@v2
       - id: pull-request-metadata
@@ -58,13 +57,14 @@ jobs:
     needs: collect-pr-info
     continue-on-error: true
     strategy:
-      matrix: ${{ fromJSON(needs.collect-pr-info.outputs.matrix) }}
+      matrix:
+        category: ${{ fromJSON(needs.collect-pr-info.outputs.categories) }}
       fail-fast: false
       max-parallel: 10
     # TODO: Outputs
     env:
       CATEGORY: ${{ matrix.category }}
-      TAGS: ${{ matrix.tags }}
+      TAGS: ${{ fromJSON(format('needs.collect-pr-info.outputs.tags.{0}', matrix.category)) }}
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/review-common-problem
