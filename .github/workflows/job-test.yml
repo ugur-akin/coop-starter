@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v2
       - id: pull-request-metadata
         name: Collect metadata information about the pull request
-        uses: .github/actions/pull-request-metadata
+        uses: ./.github/actions/pull-request-metadata
         with:
           AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
           AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
