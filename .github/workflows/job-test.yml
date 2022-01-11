@@ -21,7 +21,7 @@ jobs:
       labels: ${{ steps.pull-request-metadata.outputs.labels }}
       keywords: ${{ steps.pull-request-metadata.outputs.keywords }}
       categories: ${{ steps.pull-request-metadata.outputs.categories }}
-      tags: ${{ toJSON(steps.pull-request-metadata.outputs.tags) }}
+      tags: ${{ steps.pull-request-metadata.outputs.tags }}
     steps:
       - uses: actions/checkout@v2
       - id: pull-request-metadata
@@ -64,17 +64,16 @@ jobs:
     # TODO: Outputs
     env:
       CATEGORY: ${{ matrix.category }}
-      TAGS: ${{ needs.collect-pr-info.outputs.tags }}
+      RAW_TAGS: ${{ needs.collect-pr-info.outputs.tags }}
     steps:
       - id: get-tags
         run: |
-          echo $TAGS | jq .$CATEGORY >> ./temp.txt
-          cat ./temp.txt
+          echo TAGS=$(echo $RAW_TAGS | jq .$CATEGORY) >> $GITHUB_ENV
       - uses: actions/checkout@v2
       - uses: ./.github/actions/review-common-problem
         with:
           for: ${{ env.CATEGORY }}
-          tags: ${{ toJSON(env.TAGS) }}
+          tags: ${{ env.TAGS }}
           owner: ${{ env.OWNER }}
           repository: ${{ env.REPOSITORY }}
           pull_number: ${{ env.PULL_NUMBER }}
