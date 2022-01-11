@@ -58,7 +58,7 @@ jobs:
     needs: collect-pr-info
     continue-on-error: true
     strategy:
-      matrix: ${{ needs.collect-pr-info.outputs.matrix }}
+      matrix: ${{ fromJSON(needs.collect-pr-info.outputs.matrix) }}
       fail-fast: false
       max-parallel: 10
     # TODO: Outputs
