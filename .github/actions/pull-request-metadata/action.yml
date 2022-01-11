@@ -54,7 +54,11 @@ outputs:
       The list of categories that is relevant to the pull request
   tags:
     description: >
-      The list of tags relevant to the pull request, grouped by category.
+      The list of tags relevant to the pull request.
+  matrix:
+    description: >
+      List of categories with their tags formatted appropriately
+      to be passed to a build matrix.
 
 runs:
   using: node16

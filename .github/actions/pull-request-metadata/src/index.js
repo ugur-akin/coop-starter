@@ -91,14 +91,22 @@ const run = async () => {
     core.setOutput("labels", labels);
     core.setOutput("keywords", keywords);
 
-    const { categories: categorySet, tags } = await fetchProblemTags(
-      labels,
-      issueTitles
-    );
+    const {
+      categories: categorySet,
+      tags: tagSet,
+      groupedByCategory: tagMap,
+    } = await fetchProblemTags(labels, issueTitles);
 
     const categories = [...categorySet];
+    const tags = [...tagSet];
+    const matrix = [];
+    tagMap.forEach((tagList, category) =>
+      matrix.push({ category, tags: tagList })
+    );
+
     core.setOutput("categories", categories);
     core.setOutput("tags", tags);
+    core.setOutput("matrix", matrix);
   } catch (err) {
     core.setFailed(err);
   }
