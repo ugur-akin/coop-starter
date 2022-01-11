@@ -7,6 +7,9 @@ import fetch from "node-fetch";
 const issueHtmlRe =
   /https:\/\/github.com\/(?<org>.+)\/(?<repo>.+)\/issues\/(?<num>\d+)/;
 
+// Run below for every review
+const additionalLabels = ["generic"];
+
 const fetchPullRequest = async (url) => {
   const fetchOptions = {
     method: "GET",
@@ -34,6 +37,7 @@ const run = async () => {
   try {
     const prHtmlUrl = github.context.payload?.pull_request.html_url;
 
+    // TODO: Implement fetching pulls if context doesn't exist (good for manual runs)
     if (!prHtmlUrl) {
       throw new Error(
         `Pull request URL is missing from context. Please ensure the action
@@ -78,6 +82,7 @@ const run = async () => {
     const labelSet = new Set();
     issueLabels.forEach((label) => labelSet.add(label));
     prLabels.forEach((label) => labelSet.add(label));
+    additionalLabels.forEach((label) => labelSet.add(label));
 
     const labels = [...labelSet];
     const keywords = [...keywordSet];
@@ -86,8 +91,14 @@ const run = async () => {
     core.setOutput("labels", labels);
     core.setOutput("keywords", keywords);
 
-    const commonProblemTags = await fetchProblemTags(labels, issueTitles);
-    core.setOutput("common-problem-tags", commonProblemTags);
+    const { categories: categorySet, tags } = await fetchProblemTags(
+      labels,
+      issueTitles
+    );
+
+    const categories = [...categorySet];
+    core.setOutput("categories", categories);
+    core.setOutput("tags", tags);
   } catch (err) {
     core.setFailed(err);
   }

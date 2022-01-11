@@ -30,7 +30,8 @@ const fetchProblemTags = (labels, issues) => {
   const formula = lookupTextFormula(labels, issues);
 
   const fetchResult = new Promise((resolve, reject) => {
-    const reviewNames = [];
+    const categories = new Set();
+    const tags = {};
 
     automatedReviewTable
       .select({
@@ -40,9 +41,17 @@ const fetchProblemTags = (labels, issues) => {
       .eachPage(
         (records, fetchNextPage) => {
           records.forEach((record) => {
-            core.debug(record.get("Name"));
-            core.debug(reviewNames);
-            reviewNames.push(record.get("Name"));
+            const tag = record.get("Name");
+            const category = record.get("Category");
+
+            categories.add(category);
+
+            if (tags.hasOwnProperty(category)) {
+              const prev = tags[category];
+              tags[category] = [...prev, tag];
+            } else {
+              tags[category] = [tag];
+            }
           });
 
           fetchNextPage();
@@ -51,7 +60,7 @@ const fetchProblemTags = (labels, issues) => {
           if (err) {
             reject(err);
           }
-          resolve(reviewNames);
+          resolve({ categories, tags });
         }
       );
   });
