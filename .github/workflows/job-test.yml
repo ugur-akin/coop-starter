@@ -64,7 +64,7 @@ jobs:
     # TODO: Outputs
     env:
       CATEGORY: ${{ matrix.category }}
-      TAGS: ${{ toJSON(needs.collect-pr-info.outputs.tags) }}
+      TAGS: ${{ needs.collect-pr-info.outputs.tags }}
     steps:
       - id: get-tags
         run: |
