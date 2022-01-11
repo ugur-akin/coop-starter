@@ -21,12 +21,12 @@ jobs:
       labels: ${{ steps.pull-request-metadata.outputs.labels }}
       keywords: ${{ steps.pull-request-metadata.outputs.keywords }}
       categories: ${{ steps.pull-request-metadata.outputs.categories }}
-      tags: ${{ steps.pull-request-metadata.outputs.cpt-map }}
+      tags: ${{ toJSON(steps.pull-request-metadata.outputs.tags) }}
     steps:
       - uses: actions/checkout@v2
       - id: pull-request-metadata
         name: Collect metadata information about the pull request
-        uses: ./.github/actions/pull-request-metadata
+        uses: .github/actions/pull-request-metadata
         with:
           AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
           AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
@@ -70,7 +70,7 @@ jobs:
       - uses: ./.github/actions/review-common-problem
         with:
           for: ${{ env.CATEGORY }}
-          tags: ${{ env.TAGS }}
+          tags: ${{ toJSON(env.TAGS) }}
           owner: ${{ env.OWNER }}
           repository: ${{ env.REPOSITORY }}
           pull_number: ${{ env.PULL_NUMBER }}
