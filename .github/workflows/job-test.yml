@@ -68,7 +68,7 @@ jobs:
     steps:
       - id: get-tags
         run: |
-          echo $TAGS | jq '.$CATEGORY' >> ./temp.txt
+          echo $TAGS | jq .$CATEGORY >> ./temp.txt
           cat ./temp.txt
       - uses: actions/checkout@v2
       - uses: ./.github/actions/review-common-problem
