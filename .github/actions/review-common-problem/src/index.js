@@ -12,12 +12,11 @@ import { SuboptimalTitleReviewer } from "./reviewers/SuboptimalTitleReviewer";
 
 const run = async () => {
   try {
-    const tag = core.getInput("for");
+    const category = core.getInput("for");
+    const tags = JSON.parse(core.getInput("tags"));
     const owner = core.getInput("owner");
     const repository = core.getInput("repository");
     const pullNumber = core.getInput("pull_number");
-    const reviewId = core.getInput("review_id");
-    const commitId = core.getInput("commit_id");
     const auth = core.getInput("GITHUB_TOKEN");
     const octokit = github.getOctokit(auth);
 
@@ -36,25 +35,18 @@ const run = async () => {
       pullRequest = pullPayload;
     }
 
-    switch (tag) {
-      case "suboptimal-unedited-title":
-        const passed = SuboptimalTitleReviewer(pullRequest);
-        octokit.rest.pulls.createReviewComment({
-          owner: owner,
-          repo: repository,
-          pull_number: pullNumber,
-          path: ".github/actions/.gitignore",
-          // review_id: reviewId,
-          body: "Please use a descriptive title as close to plain english as possible.",
-          line: 1,
-          side: "RIGHT",
-          commit_id: commitId,
-        });
-        break;
-      default:
-        throw new Error(
-          `Aborted review process: Review tag ${tag} is incorrect or its automated review is not yet implemented.`
-        );
+    const reviewer = Reviewer.fromCategory(category);
+
+    reviewer.activate(tags).withOctokit(octokit).onPull(pullRequest);
+    await reviewer.runReview();
+
+    if (reviewer.status !== "Aborted") {
+      await reviewer.postReview();
+    } else {
+      throw new Error(
+        `Review was aborted due to following reasons:
+            ${reviewer.getAbortReason()}`
+      );
     }
   } catch (err) {
     core.setFailed(err);

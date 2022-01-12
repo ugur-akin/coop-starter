@@ -4,7 +4,10 @@ description: |
   Runs a review on the pull request for the given tag
 inputs:
   for:
-    description: "Common problem tag to run a review for"
+    description: "The category of the review"
+    required: true
+  tags:
+    description: "List of tags/checks that will be activated within the review"
     required: true
   owner:
     description: "Owner of the pull request"
