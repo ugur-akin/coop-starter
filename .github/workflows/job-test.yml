@@ -70,9 +70,9 @@ jobs:
         run: |
           echo TAGS=$(echo $RAW_TAGS | jq .$CATEGORY) >> $GITHUB_ENV
       - uses: actions/checkout@v2
-      - uses: ugur-akin/actions@0.1.0
+      - uses: ugur-akin/actions@v0.1.0
         with:
-          for: ${{ env.CATEGORY }}
+          category: ${{ env.CATEGORY }}
           tags: ${{ env.TAGS }}
           owner: ${{ env.OWNER }}
           repository: ${{ env.REPOSITORY }}
