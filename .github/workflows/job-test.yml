@@ -70,7 +70,7 @@ jobs:
         run: |
           echo TAGS=$(echo $RAW_TAGS | jq .$CATEGORY) >> $GITHUB_ENV
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/review-common-problem
+      - uses: ugur-akin/actions@0.1.0
         with:
           for: ${{ env.CATEGORY }}
           tags: ${{ env.TAGS }}
