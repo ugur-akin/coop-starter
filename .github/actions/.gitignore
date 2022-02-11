@@ -1,4 +1,0 @@
-# Ignore any files in build other than index.js
-
-**/build/*
-!**/build/index.js
