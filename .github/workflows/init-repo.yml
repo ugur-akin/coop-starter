@@ -6,5 +6,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - env:
-          event_payload: ${{ toJSON(github.event.create) }}
+          event_payload: ${{ toJSON(github.event) }}
         run: echo ${{ env.event_payload }}
