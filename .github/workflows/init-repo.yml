@@ -1,0 +1,10 @@
+name: Repository init. on use template
+on: create
+
+jobs:
+  dump-event:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          event_payload: ${{ toJSON(github.event.create) }}
+        run: echo ${{ env.event_payload }}
